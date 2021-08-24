@@ -3,21 +3,34 @@
     <h2>
       Hello Home
     </h2>
-    <youtube-player
+    <YoutubePlayer
       :video-id="videoId"
+      :autoplay="true"
     />
   </section>
 </template>
 
-<script setup lang="ts">
+<script lang="ts">
 import {
-  ref
+  ref,
+  defineComponent
 } from 'vue'
 import YoutubePlayer from '@/components/atoms/YoutubePlayer.vue'
-export default {
-  components: {YoutubePlayer}
-}
-const videoId = ref('Dmlr6HHGfXo')
+
+export default defineComponent({
+  name: 'Home',
+  components: {
+    YoutubePlayer
+  },
+  setup () {
+    const videoId = ref('Dmlr6HHGfXo')
+
+    return {
+      videoId
+    }
+  }
+})
+
 </script>
 
 <style scoped lang="scss">
