@@ -5,8 +5,6 @@
 </template>
 
 <script setup lang="ts">
-import Player from 'youtube-player'
-
 import {
   ref,
   defineProps,
@@ -18,9 +16,10 @@ import {
   Ref
 } from 'vue'
 
-import {
-  YouTubePlayer
-} from 'youtube-player/dist/types'
+import Player from 'youtube-player'
+
+import { YouTubePlayer } from 'youtube-player/dist/types'
+
 import { IPlayerVars } from "../../types"
 
 const props = defineProps({
@@ -70,7 +69,6 @@ const callbackId = ref<number>(0)
 const cancelStatus = ref<boolean>(false)
 
 const animationFrameHook = async () => {
-  playTime.value = await player.value.getCurrentTime()
 
   if (cancelStatus.value === true) {
     cancelStatus.value = false
@@ -81,7 +79,9 @@ const animationFrameHook = async () => {
     return
   }
 
+  playTime.value = await player.value.getCurrentTime()
   emit('time', playTime.value)
+
   callbackId.value = requestAnimationFrame(animationFrameHook)
 }
 
