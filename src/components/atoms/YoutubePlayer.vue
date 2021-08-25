@@ -1,6 +1,5 @@
 <template>
   <div
-    ref="player"
     id="youtube-vue-player"
   />
 </template>
@@ -9,17 +8,20 @@
 import Player from 'youtube-player'
 
 import {
+  ref,
   defineProps,
   defineEmits,
   watch,
   onMounted,
-  onUnmounted,
-  PropType
+  onBeforeUnmount,
+  PropType,
+  Ref
 } from 'vue'
 
 import {
   YouTubePlayer
 } from 'youtube-player/dist/types'
+import { IPlayerVars } from "../../types"
 
 const props = defineProps({
   autoplay: {
@@ -51,43 +53,93 @@ const props = defineProps({
   videoId: {
     type: String,
     required: true
+  },
+  playerVars: {
+    type: Object as PropType<IPlayerVars>,
+    default: () => ({
+      autoplay: 1
+    })
   }
 })
-const emit = defineEmits(['ended', 'paused', 'played'])
-let player: YouTubePlayer = null
 
-onMounted(() => {
-  const playerVars = {
-    autoplay: props.autoplay,
-    loop: props.loop
+const emit = defineEmits(['ended', 'paused', 'played', 'buffering', 'time'])
+let player: Ref<YouTubePlayer> = ref()
+
+const playTime = ref<number>(0)
+const callbackId = ref<number>(0)
+const cancelStatus = ref<boolean>(false)
+
+const animationFrameHook = async () => {
+  playTime.value = await player.value.getCurrentTime()
+
+  if (cancelStatus.value === true) {
+    cancelStatus.value = false
+    if (callbackId.value !== 0) {
+      callbackId.value = 0
+      cancelAnimationFrame(callbackId.value)
+    }
+    return
   }
 
-  player = Player(props.elementId, {
+  emit('time', playTime.value)
+  callbackId.value = requestAnimationFrame(animationFrameHook)
+}
+
+const startPlayer = () => {
+  cancelStatus.value = false
+  animationFrameHook()
+}
+
+const pausePlayer = () => {
+  cancelStatus.value = true
+}
+
+const stopPlayer = () => {
+  cancelStatus.value = true
+  playTime.value = 0
+}
+
+onMounted(() => {
+  if (player.value) {
+    return
+  }
+
+  player.value = Player(props.elementId, {
     width: props.width,
     height: props.height,
     videoId: props.videoId,
-    playerVars: playerVars
+    playerVars: props.playerVars
   })
 
-  player.on('stateChange', (e) => {
+  player.value.on('stateChange', (e) => {
     if (e.data === YT.PlayerState.ENDED) {
-      emit('ended')
+      pausePlayer()
+      emit('ended', playTime.value)
     } else if (e.data === YT.PlayerState.PAUSED) {
-      emit('paused')
+      pausePlayer()
+      emit('paused', playTime.value)
     } else if (e.data === YT.PlayerState.PLAYING) {
-      emit('played')
+      startPlayer()
+      emit('played', playTime.value)
+    } else if (e.data === YT.PlayerState.BUFFERING) {
+      pausePlayer()
+      emit('buffering')
+    } else if (e.data === YT.PlayerState.UNSTARTED) {
     }
   })
 })
 
-onUnmounted(() => {
-  player.destroy()
-  player = null
+onBeforeUnmount(() => {
+  if (player.value) {
+    player.value.destroy()
+    player.value = null
+  }
 })
 
 watch(props.videoId, () => {
-  player.loadVideoById(props.videoId)
-  player.playVideo()
+  stopPlayer()
+  player.value.loadVideoById(props.videoId)
+  player.value.playVideo()
 })
 </script>
 

@@ -5,7 +5,8 @@
     </h2>
     <YoutubePlayer
       :video-id="videoId"
-      :autoplay="true"
+      :autoplay="false"
+      @time="onTime"
     />
   </section>
 </template>
@@ -23,9 +24,14 @@ export default defineComponent({
     YoutubePlayer
   },
   setup () {
-    const videoId = ref('Dmlr6HHGfXo')
+    const videoId = ref('Ht99auBFCY4')
+
+    const onTime = (playTime: number) => {
+      console.log(playTime)
+    }
 
     return {
+      onTime,
       videoId
     }
   }
