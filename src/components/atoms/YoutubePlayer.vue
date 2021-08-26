@@ -21,6 +21,7 @@ import Player from 'youtube-player'
 import { YouTubePlayer } from 'youtube-player/dist/types'
 
 import { IPlayerVars } from "../../types"
+import { ObjectEmitsOptions } from '@vue/runtime-core'
 
 const props = defineProps({
   autoplay: {

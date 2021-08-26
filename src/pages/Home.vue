@@ -8,6 +8,9 @@
       :autoplay="false"
       @time="onTime"
     />
+    <p>
+      {{ playTime }}
+    </p>
   </section>
 </template>
 
@@ -24,14 +27,16 @@ export default defineComponent({
     YoutubePlayer
   },
   setup () {
-    const videoId = ref('Ht99auBFCY4')
+    const videoId = ref('YOSpS0WOnCo')
+    const playTime = ref(0)
 
-    const onTime = (playTime: number) => {
-      console.log(playTime)
+    const onTime = (time: number) => {
+      playTime.value = time
     }
 
     return {
       onTime,
+      playTime,
       videoId
     }
   }
