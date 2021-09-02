@@ -19,6 +19,7 @@
     "@vue/compiler-sfc": "^3.0.5",
     "autoprefixer": "^10.3.3",
     "postcss": "^8.3.6",
+    "sass": "^1.39.0",
     "tailwindcss": "^2.2.9",
     "vite": "^2.4.4"
   }
