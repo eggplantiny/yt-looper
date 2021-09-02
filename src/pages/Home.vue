@@ -3,6 +3,9 @@
     <h2>
       Hello Home
     </h2>
+    <p>
+      <text-field />
+    </p>
     <YoutubePlayer
       :video-id="videoId"
       :autoplay="false"
@@ -20,10 +23,12 @@ import {
   defineComponent
 } from 'vue'
 import YoutubePlayer from '@/components/atoms/YoutubePlayer.vue'
+import TextField from '../components/atoms/TextField.vue'
 
 export default defineComponent({
   name: 'Home',
   components: {
+    TextField,
     YoutubePlayer
   },
   setup () {
