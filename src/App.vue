@@ -1,8 +1,5 @@
 <template>
-  <main>
-    <h2>
-      Hello World
-    </h2>
+  <main class="container mx-auto">
     <router-view />
   </main>
 </template>
@@ -11,7 +8,7 @@
 
 </script>
 
-<style>
+<style lang="scss">
 #app {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

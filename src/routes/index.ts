@@ -1,10 +1,30 @@
-import { createWebHistory, createRouter } from 'vue-router';
+import { createWebHistory, createRouter, RouteRecordRaw } from 'vue-router'
+import defaultLayout from '@/layouts/default.vue'
+import dynamicVideoId from '@/pages/_videoId.vue'
+import Home from '@/pages/Home.vue'
 
-const routes = [
+const routes: RouteRecordRaw[] = [
+  {
+    path: '/:videoId',
+    name: 'VideoPlayer',
+    component: defaultLayout,
+    children: [
+      {
+        path: '',
+        component: dynamicVideoId
+      }
+    ]
+  },
   {
     path: '/',
     name: 'Home',
-    component: () => import('@/pages/Home.vue')
+    component: defaultLayout,
+    children: [
+      {
+        path: '',
+        component: Home
+      }
+    ]
   }
 ]
 

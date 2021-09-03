@@ -1,14 +1,13 @@
 <template>
   <div>
-    <h2>
-      Hello World
-    </h2>
+    Default Layout
+    <router-view />
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Home'
+  name: 'default'
 }
 </script>
 
