@@ -4,6 +4,7 @@
       {{ label }}
     </label>
     <input
+      v-model="model"
       id="input"
       class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
       :type="type"
@@ -16,9 +17,11 @@
 import {
   defineComponent
 } from 'vue'
+import useModel from '@/compositions/useModel'
 
 export default defineComponent({
   name: 'TextField',
+
   props: {
     label: {
       type: String,
@@ -33,7 +36,12 @@ export default defineComponent({
       default: 'text'
     }
   },
-  setup () {
+  setup (props, context) {
+    const model = useModel<string>(context)
+
+    return {
+      model
+    }
   }
 })
 </script>

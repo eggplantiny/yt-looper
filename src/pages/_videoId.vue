@@ -1,10 +1,5 @@
 <template>
   <section>
-    <p>
-      <text-field
-        placeholder="Youtube Video ID"
-      />
-    </p>
     <div class="mx-auto">
       <YoutubePlayer
         :video-id="videoId"
