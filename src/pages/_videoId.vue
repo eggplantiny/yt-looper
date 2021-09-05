@@ -16,8 +16,9 @@
 <script lang="ts">
 import {
   ref,
-  defineComponent
+  defineComponent, computed
 } from 'vue'
+import { useRoute } from 'vue-router'
 import YoutubePlayer from '@/components/atoms/YoutubePlayer.vue'
 import TextField from '@/components/atoms/TextField.vue'
 
@@ -28,7 +29,8 @@ export default defineComponent({
     YoutubePlayer
   },
   setup () {
-    const videoId = ref('YOSpS0WOnCo')
+    const route = useRoute()
+    const videoId = computed(() => route.params.videoId)
     const playTime = ref(0)
 
     const onTime = (time: number) => {

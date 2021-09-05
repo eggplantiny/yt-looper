@@ -15,14 +15,18 @@
 
 <script lang="ts">
 import {
-  defineComponent
+  computed,
+  defineComponent, SetupContext
 } from 'vue'
-import useModel from '@/compositions/useModel'
 
 export default defineComponent({
   name: 'TextField',
-
+  emits: ['update:modelValue'],
   props: {
+    modelValue: {
+      type: String,
+      default: ''
+    },
     label: {
       type: String,
       default: ''
@@ -36,8 +40,15 @@ export default defineComponent({
       default: 'text'
     }
   },
-  setup (props, context) {
-    const model = useModel<string>(context)
+  setup (props, context: SetupContext) {
+    const model = computed({
+      get () {
+        return props.modelValue
+      },
+      set (value) {
+        context.emit('update:modelValue', value)
+      }
+    })
 
     return {
       model

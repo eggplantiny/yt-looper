@@ -4,6 +4,7 @@
       <text-field
         v-model="searchText"
         placeholder="Youtube Video ID"
+        @keydown.enter="onEnter"
       />
     </p>
     {{ searchText }}
@@ -11,8 +12,9 @@
   </div>
 </template>
 
-<script>
-import { defineComponent, ref } from 'vue'
+<script lang="ts">
+import { defineComponent, ref, SetupContext } from 'vue'
+import { useRouter } from 'vue-router'
 import TextField from '@/components/atoms/TextField.vue'
 
 export default defineComponent({
@@ -20,11 +22,17 @@ export default defineComponent({
   components: {
     TextField
   },
-  setup () {
+  setup (_, context: SetupContext) {
+    const router = useRouter()
     const searchText = ref('')
+    const onEnter = () => {
+      const videoId = searchText.value
+      router.push(`/${videoId}`)
+    }
 
     return {
-      searchText
+      searchText,
+      onEnter
     }
   }
 })
