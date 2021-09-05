@@ -1,6 +1,7 @@
 <template>
   <div
     id="youtube-vue-player"
+    class="mx-auto"
   />
 </template>
 
@@ -111,6 +112,8 @@ onMounted(() => {
     playerVars: props.playerVars
   })
 
+  player.value.set
+
   player.value.on('stateChange', (e) => {
     if (e.data === YT.PlayerState.ENDED) {
       pausePlayer()
@@ -143,6 +146,5 @@ watch(props.videoId, () => {
 })
 </script>
 
-<style scoped>
-
+<style scoped lang="scss">
 </style>
