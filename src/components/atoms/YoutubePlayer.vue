@@ -8,8 +8,6 @@
 <script setup lang="ts">
 import {
   ref,
-  defineProps,
-  defineEmits,
   watch,
   onMounted,
   onBeforeUnmount,

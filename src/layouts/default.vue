@@ -1,5 +1,5 @@
 <template>
-  <div class="container max-w-2xl mx-auto">
+  <div class="container max-w-3xl mx-auto">
     <p>
       <text-field
         v-model="searchText"
@@ -8,7 +8,9 @@
       />
     </p>
     {{ searchText }}
-    <router-view />
+    <div class="my-4">
+      <router-view />
+    </div>
   </div>
 </template>
 
