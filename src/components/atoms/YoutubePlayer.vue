@@ -12,7 +12,7 @@ import {
   onMounted,
   onBeforeUnmount,
   PropType,
-  Ref
+  Ref, nextTick
 } from 'vue'
 
 import Player from 'youtube-player'
@@ -60,7 +60,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['ended', 'paused', 'played', 'buffering', 'time'])
+const emit = defineEmits(['ended', 'paused', 'played', 'buffering', 'time', 'duration'])
 let player: Ref<YouTubePlayer> = ref()
 
 const playTime = ref<number>(0)
@@ -84,9 +84,12 @@ const animationFrameHook = async () => {
   callbackId.value = requestAnimationFrame(animationFrameHook)
 }
 
-const startPlayer = () => {
+const startPlayer = async () => {
   cancelStatus.value = false
-  animationFrameHook()
+  const duration = await player.value.getDuration()
+  emit('duration', duration)
+
+  return animationFrameHook()
 }
 
 const pausePlayer = () => {
@@ -98,7 +101,9 @@ const stopPlayer = () => {
   playTime.value = 0
 }
 
-onMounted(() => {
+onMounted(async () => {
+  await nextTick()
+
   if (player.value) {
     return
   }
@@ -109,8 +114,6 @@ onMounted(() => {
     videoId: props.videoId,
     playerVars: props.playerVars
   })
-
-  player.value.set
 
   player.value.on('stateChange', (e) => {
     if (e.data === YT.PlayerState.ENDED) {
