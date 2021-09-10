@@ -9,10 +9,11 @@
 import {
   ref,
   watch,
+  nextTick,
   onMounted,
   onBeforeUnmount,
   PropType,
-  Ref, nextTick
+  Ref
 } from 'vue'
 
 import Player from 'youtube-player'
@@ -63,6 +64,7 @@ const props = defineProps({
 const emit = defineEmits(['ended', 'paused', 'played', 'buffering', 'time', 'duration'])
 let player: Ref<YouTubePlayer> = ref()
 
+const videoId = ref(props.videoId)
 const playTime = ref<number>(0)
 const callbackId = ref<number>(0)
 const cancelStatus = ref<boolean>(false)
@@ -86,6 +88,7 @@ const animationFrameHook = async () => {
 
 const startPlayer = async () => {
   cancelStatus.value = false
+
   const duration = await player.value.getDuration()
   emit('duration', duration)
 
@@ -99,6 +102,10 @@ const pausePlayer = () => {
 const stopPlayer = () => {
   cancelStatus.value = true
   playTime.value = 0
+}
+
+const seekTo = (time: number) => {
+  player.value.seekTo(time, true)
 }
 
 onMounted(async () => {
@@ -115,7 +122,7 @@ onMounted(async () => {
     playerVars: props.playerVars
   })
 
-  player.value.on('stateChange', (e) => {
+  player.value.on('stateChange', async (e) => {
     if (e.data === YT.PlayerState.ENDED) {
       pausePlayer()
       emit('ended', playTime.value)
@@ -140,9 +147,9 @@ onBeforeUnmount(() => {
   }
 })
 
-watch(props.videoId, () => {
+watch(videoId, () => {
   stopPlayer()
-  player.value.loadVideoById(props.videoId)
+  player.value.loadVideoById(videoId.value)
   player.value.playVideo()
 })
 </script>
