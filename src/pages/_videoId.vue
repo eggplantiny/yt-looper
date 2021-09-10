@@ -13,15 +13,18 @@
       {{ playTime }}
     </p>
     <p class="mt-8">
+      {{ currentPath }}
+    </p>
+    <div class="mt-8">
       <slider
         v-model="slider.range"
         :max="slider.max.value"
         :min="slider.min.value"
         :step="slider.step.value"
         :format="slider.format"
-        class="slider-blue"
+        @change="onChangeRange"
       />
-    </p>
+    </div>
   </section>
 </template>
 
@@ -30,9 +33,11 @@ import {
   ref,
   defineComponent,
   computed,
-  watch, reactive, toRefs, onMounted
+  watch,
+  reactive,
+  toRefs, watchEffect
 } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import Slider from '@vueform/slider'
 import YoutubePlayer from '@/components/atoms/YoutubePlayer.vue'
 import TextField from '@/components/atoms/TextField.vue'
@@ -46,11 +51,13 @@ export default defineComponent({
   },
   setup () {
     const route = useRoute()
+    const router = useRouter()
     const videoId = computed(() => route.params.videoId)
     const player = ref(null)
     const playTime = ref(0)
     const duration = ref(0)
     const playTimes = ref([0, 0])
+    const currentPath = computed(() => `${location.host}${route.fullPath}`)
 
     const slider = toRefs(
       reactive({
@@ -63,15 +70,23 @@ export default defineComponent({
       })
     )
 
-    const onTime = (time: number) => {
+    const onChangeRange = (value) => {
+      router.replace({ path: route.path, query: { s: value[0], e: value[1] } })
+    }
+
+    const onTime = async (time: number) => {
       playTime.value = time
 
-      if (slider.ready.value === false) {
+      if (
+        slider.ready.value === false ||
+        (slider.range[0] === 0 && slider.range[1] === 0)
+      ) {
         return
       }
 
       if (time > slider.range[1]) {
-        console.log(player.value)
+        player.value.seekTo(slider.range[0])
+      } else if (time < slider.range[0]) {
         player.value.seekTo(slider.range[0])
       }
     }
@@ -80,25 +95,33 @@ export default defineComponent({
       slider.max.value = time
     }
 
-    onMounted(() => {
-      console.log('fucking', player.value)
-    })
-
     watch(slider.max, () => {
       if (slider.ready.value === false) {
-        slider.range.value = [0, slider.max.value]
-      }
+        let start = 0
+        let end = slider.max.value
 
-      slider.ready.value = true
+        if (route.query.s && !isNaN(Number(route.query.s))) {
+          start = Number(route.query.s)
+        }
+
+        if (route.query.e && !isNaN(Number(route.query.e))) {
+          end = Number(route.query.e)
+        }
+
+        slider.range.value = [start, end]
+        slider.ready.value = true
+      }
     })
 
     return {
+      onChangeRange,
       player,
       playTime,
       videoId,
       playTimes,
       duration,
       slider,
+      currentPath,
       onTime,
       onChangeDuration
     }

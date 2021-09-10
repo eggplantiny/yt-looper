@@ -10,6 +10,7 @@ import {
   ref,
   watch,
   nextTick,
+  defineExpose,
   onMounted,
   onBeforeUnmount,
   PropType,
@@ -21,6 +22,7 @@ import Player from 'youtube-player'
 import { YouTubePlayer } from 'youtube-player/dist/types'
 
 import { IPlayerVars } from "@/types"
+import { delay } from '@/utils/asyncTools'
 
 const props = defineProps({
   autoplay: {
@@ -53,6 +55,10 @@ const props = defineProps({
     type: String,
     required: true
   },
+  timing: {
+    type: Number,
+    default: 33
+  },
   playerVars: {
     type: Object as PropType<IPlayerVars>,
     default: () => ({
@@ -68,6 +74,8 @@ const videoId = ref(props.videoId)
 const playTime = ref<number>(0)
 const callbackId = ref<number>(0)
 const cancelStatus = ref<boolean>(false)
+const initialized = ref<boolean>(false)
+const lastTime = ref<number>(props.timing)
 
 const animationFrameHook = async () => {
 
@@ -81,16 +89,23 @@ const animationFrameHook = async () => {
   }
 
   playTime.value = await player.value.getCurrentTime()
-  emit('time', playTime.value)
+  const timingDiff = lastTime.value - playTime.value
+  if (timingDiff < props.timing) {
+    await delay(timingDiff)
+  }
 
   callbackId.value = requestAnimationFrame(animationFrameHook)
+  emit('time', playTime.value)
 }
 
 const startPlayer = async () => {
   cancelStatus.value = false
 
-  const duration = await player.value.getDuration()
-  emit('duration', duration)
+  if (initialized.value === false) {
+    const duration = await player.value.getDuration()
+    emit('duration', duration)
+    initialized.value = true
+  }
 
   return animationFrameHook()
 }
@@ -145,6 +160,10 @@ onBeforeUnmount(() => {
     player.value.destroy()
     player.value = null
   }
+})
+
+defineExpose({
+  seekTo
 })
 
 watch(videoId, () => {
