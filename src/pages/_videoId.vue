@@ -60,7 +60,6 @@ export default defineComponent({
     const currentPath = computed(() => `${location.host}${route.fullPath}`)
 
     const slider = reactive({
-      ready: false,
       range: [0, 0],
       min: 0,
       max: 0,
@@ -69,13 +68,14 @@ export default defineComponent({
     })
 
     const sliderValue = toRef(slider, 'range')
+    const ready = ref(false)
 
     const onChangeRange = (value) => {
       router.replace({ path: route.path, query: { s: value[0], e: value[1] } })
     }
 
     const onTime = async (time: number) => {
-      if (slider.ready === false) {
+      if (ready.value === false) {
         return
       }
 
@@ -101,12 +101,23 @@ export default defineComponent({
       }
 
       slider.range = [start, end]
-      slider.ready = true
+      ready.value = true
     }
 
-    onMounted(async () => {
+    const initialize = async () => {
+      console.log('fucking initialized')
       await nextTick()
       slider.max = await player.value.getDuration()
+    }
+
+    watch(videoId, async () => {
+      ready.value = false
+      await player.value.loadVideoById(videoId.value)
+      await initialize()
+    })
+
+    onMounted(() => {
+      initialize()
     })
 
     return {

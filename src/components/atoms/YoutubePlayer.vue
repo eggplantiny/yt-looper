@@ -57,7 +57,7 @@ const props = defineProps({
   },
   timing: {
     type: Number,
-    default: 33
+    default: 66
   },
   playerVars: {
     type: Object as PropType<IPlayerVars>,
@@ -125,6 +125,12 @@ const getDuration = () => {
   return player.value.getDuration()
 }
 
+const loadVideoById = async (videoId: string) => {
+  stopPlayer()
+  await nextTick()
+  player.value.loadVideoById({ videoId })
+}
+
 onMounted(async () => {
   await nextTick()
 
@@ -166,12 +172,13 @@ onBeforeUnmount(() => {
 
 defineExpose({
   seekTo,
-  getDuration
+  getDuration,
+  loadVideoById
 })
 
-watch(videoId, () => {
+watch(videoId, async () => {
   stopPlayer()
-  player.value.loadVideoById(videoId.value)
+  await player.value.loadVideoById(videoId.value)
   player.value.playVideo()
 })
 </script>
