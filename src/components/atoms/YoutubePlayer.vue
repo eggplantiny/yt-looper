@@ -67,7 +67,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['ended', 'paused', 'played', 'buffering', 'time', 'duration'])
+const emit = defineEmits(['ended', 'paused', 'play', 'buffering', 'time'])
 let player: Ref<YouTubePlayer> = ref()
 
 const videoId = ref(props.videoId)
@@ -102,8 +102,6 @@ const startPlayer = async () => {
   cancelStatus.value = false
 
   if (initialized.value === false) {
-    const duration = await player.value.getDuration()
-    emit('duration', duration)
     initialized.value = true
   }
 
@@ -121,6 +119,10 @@ const stopPlayer = () => {
 
 const seekTo = (time: number) => {
   player.value.seekTo(time, true)
+}
+
+const getDuration = () => {
+  return player.value.getDuration()
 }
 
 onMounted(async () => {
@@ -145,8 +147,8 @@ onMounted(async () => {
       pausePlayer()
       emit('paused', playTime.value)
     } else if (e.data === YT.PlayerState.PLAYING) {
+      emit('play', playTime.value)
       startPlayer()
-      emit('played', playTime.value)
     } else if (e.data === YT.PlayerState.BUFFERING) {
       pausePlayer()
       emit('buffering')
@@ -163,7 +165,8 @@ onBeforeUnmount(() => {
 })
 
 defineExpose({
-  seekTo
+  seekTo,
+  getDuration
 })
 
 watch(videoId, () => {

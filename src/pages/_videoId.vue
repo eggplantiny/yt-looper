@@ -6,21 +6,23 @@
         :video-id="videoId"
         :autoplay="0"
         @time="onTime"
-        @duration="onChangeDuration"
+        @play="onPlay"
       />
     </div>
     <p class="mt-8">
-      {{ playTime }}
+      {{ playTime.toFixed(2) }}
     </p>
     <p class="mt-8">
-      {{ currentPath }}
+      <a :href="currentPath">
+        {{ currentPath }}
+      </a>
     </p>
     <div class="mt-8">
       <slider
-        v-model="slider.range"
-        :max="slider.max.value"
-        :min="slider.min.value"
-        :step="slider.step.value"
+        v-model="sliderValue"
+        :max="slider.max"
+        :min="slider.min"
+        :step="slider.step"
         :format="slider.format"
         @change="onChangeRange"
       />
@@ -35,7 +37,7 @@ import {
   computed,
   watch,
   reactive,
-  toRefs, watchEffect
+  toRef, onMounted, nextTick
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Slider from '@vueform/slider'
@@ -55,34 +57,29 @@ export default defineComponent({
     const videoId = computed(() => route.params.videoId)
     const player = ref(null)
     const playTime = ref(0)
-    const duration = ref(0)
-    const playTimes = ref([0, 0])
     const currentPath = computed(() => `${location.host}${route.fullPath}`)
 
-    const slider = toRefs(
-      reactive({
-        ready: false,
-        range: [0, 0],
-        min: 0,
-        max: 0,
-        step: 0.1,
-        format: (value) => `${Number(value).toFixed(2)} 초`
-      })
-    )
+    const slider = reactive({
+      ready: false,
+      range: [0, 0],
+      min: 0,
+      max: 0,
+      step: 0.1,
+      format: (value) => `${Number(value).toFixed(2)} 초`
+    })
+
+    const sliderValue = toRef(slider, 'range')
 
     const onChangeRange = (value) => {
       router.replace({ path: route.path, query: { s: value[0], e: value[1] } })
     }
 
     const onTime = async (time: number) => {
-      playTime.value = time
-
-      if (
-        slider.ready.value === false ||
-        (slider.range[0] === 0 && slider.range[1] === 0)
-      ) {
+      if (slider.ready === false) {
         return
       }
+
+      playTime.value = time
 
       if (time > slider.range[1]) {
         player.value.seekTo(slider.range[0])
@@ -91,39 +88,37 @@ export default defineComponent({
       }
     }
 
-    const onChangeDuration = (time: number) => {
-      slider.max.value = time
+    const onPlay = () => {
+      let start = 0
+      let end = slider.max
+
+      if (route.query.s && !isNaN(Number(route.query.s))) {
+        start = Number(route.query.s)
+      }
+
+      if (route.query.e && !isNaN(Number(route.query.e))) {
+        end = Number(route.query.e)
+      }
+
+      slider.range = [start, end]
+      slider.ready = true
     }
 
-    watch(slider.max, () => {
-      if (slider.ready.value === false) {
-        let start = 0
-        let end = slider.max.value
-
-        if (route.query.s && !isNaN(Number(route.query.s))) {
-          start = Number(route.query.s)
-        }
-
-        if (route.query.e && !isNaN(Number(route.query.e))) {
-          end = Number(route.query.e)
-        }
-
-        slider.range.value = [start, end]
-        slider.ready.value = true
-      }
+    onMounted(async () => {
+      await nextTick()
+      slider.max = await player.value.getDuration()
     })
 
     return {
-      onChangeRange,
       player,
       playTime,
       videoId,
-      playTimes,
-      duration,
       slider,
+      sliderValue,
       currentPath,
       onTime,
-      onChangeDuration
+      onPlay,
+      onChangeRange
     }
   }
 })
