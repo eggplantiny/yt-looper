@@ -1,10 +1,10 @@
 <template>
-  <button
-    class="font-bold py-2 px-4 rounded"
+  <li
+    class="py-2 px-4 block whitespace-nowrap"
     :class="computedClass"
   >
     <slot />
-  </button>
+  </li>
 </template>
 
 <script lang="ts">
@@ -22,7 +22,7 @@ import {
 } from "@/compositions/useTailwind"
 
 export default {
-  name: 'AButton',
+  name: 'AListItem',
   props: {
     color: {
       type: String as PropType<Tailwind.Color>,
@@ -30,18 +30,18 @@ export default {
     },
     text: {
       type: String as PropType<Tailwind.Color>,
-      default: 'white'
+      default: 'black'
     }
   },
   setup (props) {
     const computedClass = computed(() => {
       const bgClasses = [
-        useColor('bg', props.color, 500),
-        useColor('hover:bg', props.color, 700)
+        useColor('bg', props.color, 300),
+        useColor('hover:bg', props.color, 500)
       ]
 
       const textClasses = [
-        useColor('text', props.text)
+        useColor('text', props.text, 700)
       ]
 
       return [...bgClasses, ...textClasses]

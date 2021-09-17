@@ -22,6 +22,10 @@ export interface IPlayerVars {
   widget_referrer?: string | undefined,
 }
 
+export declare namespace Youtube {
+  type PlaybackRate = 0.25 | 0.50 | 0.75 | 1.0 | 1.25 | 1.50 | 1.75 | 2.0
+}
+
 export declare namespace Tailwind {
   type ColorLevel = 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900
   type Color = 'gray' | 'red' | 'yellow' | 'green' | 'blue' | 'indigo' | 'purple' | 'pink' | 'black' | 'white'

@@ -10,30 +10,40 @@
         @play="onPlay"
       />
     </div>
-    <p class="mt-8">
-      {{ playTime.toFixed(2) }}
-    </p>
-    <p class="mt-8">
-      <a :href="currentPath">
-        {{ currentPath }}
-      </a>
-    </p>
-    <div class="mt-8">
+    <div class="mt-8 rounded-2xl shadow-lg px-8 py-4">
+      <div class="flex justify-between items-center">
+        <span>
+          {{ playTime.toFixed(2) }} sec
+        </span>
+        <div>
+          <dropdown-menu>
+            Playrate
+          </dropdown-menu>
+        </div>
+      </div>
+    </div>
+    <div class="mt-8 rounded-2xl shadow-lg px-8 py-4">
       <slider
         v-model="sliderValue"
+        class="slider-indigo"
         :max="slider.max"
         :min="slider.min"
         :step="slider.step"
         :format="slider.format"
         @change="onChangeRange"
       />
-    </div>
-    <div>
-      <a-button
-        color="indigo"
-      >
-        Hello World
-      </a-button>
+
+      <div class="mt-2 flex items-center">
+        <a :href="currentPath">
+          {{ currentPath }}
+        </a>
+        <a-button
+          color="indigo"
+          class="ml-auto"
+        >
+          Save Loop
+        </a-button>
+      </div>
     </div>
   </section>
 </template>
@@ -49,10 +59,13 @@ import {
 } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import Slider from '@vueform/slider'
+import AButton from "@/components/atoms/AButton.vue"
+import DropdownMenu from "@/components/molecules/DropdownMenu.vue"
 import YoutubePlayer from '@/components/atoms/YoutubePlayer.vue'
 import TextField from '@/components/atoms/TextField.vue'
+
 import { Loop } from "@/types"
-import AButton from "../components/atoms/AButton.vue";
+
 
 function generatePath (fullPath) {
   return `${location.host}${fullPath}`
@@ -61,6 +74,7 @@ function generatePath (fullPath) {
 export default defineComponent({
   name: 'Home',
   components: {
+    DropdownMenu,
     AButton,
     Slider,
     TextField,
@@ -75,6 +89,7 @@ export default defineComponent({
     const currentPath = computed(() => `${location.host}${route.fullPath}`)
 
     const loopList = ref<Loop[]>([])
+    const speedItemList = ref<number[]>([])
 
     const slider = reactive({
       range: [0, 0],
@@ -122,7 +137,6 @@ export default defineComponent({
     }
 
     const initialize = async () => {
-      console.log('fucking initialized')
       await nextTick()
       slider.max = await player.value.getDuration()
     }
@@ -154,5 +168,10 @@ export default defineComponent({
 </script>
 
 <style scoped lang="scss">
+.slider-indigo {
+  --slider-connect-bg: #6366F1;
+  --slider-tooltip-bg: #6366F1;
+  --slider-handle-ring-color: #3730A3;
+}
 
 </style>

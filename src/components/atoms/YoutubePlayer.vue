@@ -21,7 +21,7 @@ import Player from 'youtube-player'
 
 import { YouTubePlayer } from 'youtube-player/dist/types'
 
-import { IPlayerVars } from "@/types"
+import {IPlayerVars, Youtube} from "@/types"
 import { delay } from '@/utils/asyncTools'
 
 const props = defineProps({
@@ -125,6 +125,10 @@ const getDuration = () => {
   return player.value.getDuration()
 }
 
+const setPlaybackRate = (rate: Youtube.PlaybackRate) => {
+  player.value.setPlaybackRate(rate)
+}
+
 const loadVideoById = async (videoId: string) => {
   stopPlayer()
   await nextTick()
@@ -173,7 +177,8 @@ onBeforeUnmount(() => {
 defineExpose({
   seekTo,
   getDuration,
-  loadVideoById
+  loadVideoById,
+  setPlaybackRate
 })
 
 watch(videoId, async () => {

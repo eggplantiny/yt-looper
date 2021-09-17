@@ -1,10 +1,9 @@
 <template>
-  <button
-    class="font-bold py-2 px-4 rounded"
-    :class="computedClass"
+  <ul
+    class="dropdown-menu absolute hidden text-grey-700 pt-1"
   >
     <slot />
-  </button>
+  </ul>
 </template>
 
 <script lang="ts">
@@ -22,7 +21,7 @@ import {
 } from "@/compositions/useTailwind"
 
 export default {
-  name: 'AButton',
+  name: 'ADropdown',
   props: {
     color: {
       type: String as PropType<Tailwind.Color>,
@@ -30,7 +29,7 @@ export default {
     },
     text: {
       type: String as PropType<Tailwind.Color>,
-      default: 'white'
+      default: 'gray'
     }
   },
   setup (props) {
@@ -41,7 +40,7 @@ export default {
       ]
 
       const textClasses = [
-        useColor('text', props.text)
+        useColor('text', props.text, 700)
       ]
 
       return [...bgClasses, ...textClasses]
@@ -55,5 +54,7 @@ export default {
 </script>
 
 <style scoped>
-
+.dropdown:hover .dropdown-menu {
+  display: block;
+}
 </style>
