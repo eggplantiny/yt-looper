@@ -2,6 +2,7 @@
   <section>
     <div class="mx-auto">
       <youtube-player
+        class="py-8 px-8 shadow-lg rounded-2xl"
         ref="player"
         :video-id="videoId"
         :autoplay="0"
@@ -27,6 +28,13 @@
         @change="onChangeRange"
       />
     </div>
+    <div>
+      <a-button
+        color="indigo"
+      >
+        Hello World
+      </a-button>
+    </div>
   </section>
 </template>
 
@@ -43,10 +51,17 @@ import { useRoute, useRouter } from 'vue-router'
 import Slider from '@vueform/slider'
 import YoutubePlayer from '@/components/atoms/YoutubePlayer.vue'
 import TextField from '@/components/atoms/TextField.vue'
+import { Loop } from "@/types"
+import AButton from "../components/atoms/AButton.vue";
+
+function generatePath (fullPath) {
+  return `${location.host}${fullPath}`
+}
 
 export default defineComponent({
   name: 'Home',
   components: {
+    AButton,
     Slider,
     TextField,
     YoutubePlayer
@@ -58,6 +73,8 @@ export default defineComponent({
     const player = ref(null)
     const playTime = ref(0)
     const currentPath = computed(() => `${location.host}${route.fullPath}`)
+
+    const loopList = ref<Loop[]>([])
 
     const slider = reactive({
       range: [0, 0],

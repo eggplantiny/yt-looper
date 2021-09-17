@@ -21,3 +21,15 @@ export interface IPlayerVars {
   start?: number | undefined,
   widget_referrer?: string | undefined,
 }
+
+export declare namespace Tailwind {
+  type ColorLevel = 50 | 100 | 200 | 300 | 400 | 500 | 600 | 700 | 800 | 900
+  type Color = 'gray' | 'red' | 'yellow' | 'green' | 'blue' | 'indigo' | 'purple' | 'pink' | 'black' | 'white'
+}
+
+export interface Loop {
+  start: number,
+  end: number,
+  url: string,
+  name?: string
+}
