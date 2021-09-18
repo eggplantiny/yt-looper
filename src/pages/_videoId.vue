@@ -16,8 +16,11 @@
           {{ playTime.toFixed(2) }} sec
         </span>
         <div>
-          <dropdown-menu>
-            Playrate
+          <dropdown-menu
+            v-model="playbackRate.value"
+            :items="playbackRate.items"
+          >
+            {{ playbackRate.value.toFixed(2) }} x
           </dropdown-menu>
         </div>
       </div>
@@ -89,7 +92,10 @@ export default defineComponent({
     const currentPath = computed(() => `${location.host}${route.fullPath}`)
 
     const loopList = ref<Loop[]>([])
-    const speedItemList = ref<number[]>([])
+    const playbackRate = reactive({
+      items: [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2],
+      value: 1
+    })
 
     const slider = reactive({
       range: [0, 0],
@@ -100,6 +106,7 @@ export default defineComponent({
     })
 
     const sliderValue = toRef(slider, 'range')
+    const playbackRateValue = toRef(playbackRate, 'value')
     const ready = ref(false)
 
     const onChangeRange = (value) => {
@@ -147,6 +154,10 @@ export default defineComponent({
       await initialize()
     })
 
+    watch(playbackRateValue, (value) => {
+      player.value.setPlaybackRate(value)
+    })
+
     onMounted(() => {
       initialize()
     })
@@ -158,6 +169,7 @@ export default defineComponent({
       slider,
       sliderValue,
       currentPath,
+      playbackRate,
       onTime,
       onPlay,
       onChangeRange

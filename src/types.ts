@@ -31,9 +31,20 @@ export declare namespace Tailwind {
   type Color = 'gray' | 'red' | 'yellow' | 'green' | 'blue' | 'indigo' | 'purple' | 'pink' | 'black' | 'white'
 }
 
+export declare namespace Style {
+  type Size = 'em' | 'ex' | 'px' | '%'
+}
+
 export interface Loop {
   start: number,
   end: number,
   url: string,
   name?: string
+}
+
+export declare namespace Components {
+  interface Item {
+    key: string,
+    value: any
+  }
 }

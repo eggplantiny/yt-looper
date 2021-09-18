@@ -10,7 +10,6 @@ import {
   ref,
   watch,
   nextTick,
-  defineExpose,
   onMounted,
   onBeforeUnmount,
   PropType,

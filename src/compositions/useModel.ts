@@ -1,15 +1,14 @@
 import {
-  SetupContext,
-  computed
-} from 'vue'
+  defineProps,
+  defineEmits
+} from "vue"
 
-export default function <T> (context: SetupContext) {
-  return computed({
-    get () {
-      return context.attrs.value as T
-    },
-    set (value: T) {
-      context.emit('input', value)
-    }
-  })
+export default function useValue () {
+  const props = defineProps(['modelValue'])
+  const emits = defineEmits(['update:modelValue'])
+
+  return {
+    props,
+    emits
+  }
 }

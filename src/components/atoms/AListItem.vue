@@ -1,6 +1,6 @@
 <template>
   <li
-    class="py-2 px-4 block whitespace-nowrap"
+    class="py-2 px-4 block whitespace-nowrap cursor-pointer"
     :class="computedClass"
   >
     <slot />
@@ -19,7 +19,7 @@ import {
 
 import {
   useColor
-} from "@/compositions/useTailwind"
+} from "../../compositions/useStyle"
 
 export default {
   name: 'AListItem',
@@ -41,7 +41,8 @@ export default {
       ]
 
       const textClasses = [
-        useColor('text', props.text, 700)
+        useColor('text', props.text, 700),
+        useColor('hover:text', 'white')
       ]
 
       return [...bgClasses, ...textClasses]

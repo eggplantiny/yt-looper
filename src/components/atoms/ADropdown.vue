@@ -1,6 +1,7 @@
 <template>
   <ul
-    class="dropdown-menu absolute hidden text-grey-700 pt-1"
+    class="dropdown-menu absolute hidden text-grey-700 pt-1 rounded-lg"
+    :style="computedStyle"
   >
     <slot />
   </ul>
@@ -9,45 +10,33 @@
 <script lang="ts">
 import {
   computed,
-  PropType
 } from 'vue'
 
 import {
-  Tailwind
-} from '@/types'
-
-import {
-  useColor
-} from "@/compositions/useTailwind"
+  useSize
+} from "@/compositions/useStyle"
 
 export default {
   name: 'ADropdown',
   props: {
-    color: {
-      type: String as PropType<Tailwind.Color>,
-      default: 'indigo'
-    },
-    text: {
-      type: String as PropType<Tailwind.Color>,
-      default: 'gray'
+    width: {
+      type: Number,
+      default: 100
     }
   },
   setup (props) {
-    const computedClass = computed(() => {
-      const bgClasses = [
-        useColor('bg', props.color, 500),
-        useColor('hover:bg', props.color, 700)
-      ]
+    const computedStyle = computed(() => {
+      const minWidth = useSize(props.width)
+      const width = useSize(100, '%')
 
-      const textClasses = [
-        useColor('text', props.text, 700)
-      ]
-
-      return [...bgClasses, ...textClasses]
+      return {
+        minWidth,
+        width
+      }
     })
 
     return {
-      computedClass
+      computedStyle
     }
   }
 }
@@ -57,4 +46,9 @@ export default {
 .dropdown:hover .dropdown-menu {
   display: block;
 }
+
+.dropdown-menu {
+  border-radius: 2em;
+}
+
 </style>

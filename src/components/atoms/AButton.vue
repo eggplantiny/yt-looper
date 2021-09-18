@@ -19,7 +19,7 @@ import {
 
 import {
   useColor
-} from "@/compositions/useTailwind"
+} from "../../compositions/useStyle"
 
 export default {
   name: 'AButton',

@@ -1,4 +1,5 @@
 import {
+  Style,
   Tailwind
 } from '@/types'
 
@@ -10,4 +11,8 @@ export function useColor (prefix: string, color: Tailwind.Color, colorLevel?: Ta
   }
 
   return result
+}
+
+export function useSize (value: number, unit: Style.Size = 'px') {
+  return `${value}${unit}`
 }
