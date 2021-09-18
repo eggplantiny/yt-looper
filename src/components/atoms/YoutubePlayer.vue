@@ -134,6 +134,14 @@ const loadVideoById = async (videoId: string) => {
   player.value.loadVideoById({ videoId })
 }
 
+const pauseVideo = () => {
+  player.value.pauseVideo()
+}
+
+const playVideo = () => {
+  player.value.playVideo()
+}
+
 onMounted(async () => {
   await nextTick()
 
@@ -177,7 +185,9 @@ defineExpose({
   seekTo,
   getDuration,
   loadVideoById,
-  setPlaybackRate
+  setPlaybackRate,
+  pauseVideo,
+  playVideo
 })
 
 watch(videoId, async () => {

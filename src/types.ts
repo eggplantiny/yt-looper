@@ -36,15 +36,17 @@ export declare namespace Style {
 }
 
 export interface Loop {
-  start: number,
-  end: number,
-  url: string,
+  start: number
+  end: number
+  url: string
+  createdAt: number
+  id: string
   name?: string
 }
 
 export declare namespace Components {
   interface Item {
-    key: string,
+    key: string
     value: any
   }
 }
