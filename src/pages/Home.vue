@@ -1,13 +1,15 @@
 <template>
-  <div>
+  <div class="mt-16">
     <text-field
       v-model="searchValue"
+      placeholder="Youtube Video URL or ID"
       @keydown.enter="onEntered"
     />
   </div>
 </template>
 
 <script lang="ts">
+import { YouTubeURLParser } from '@iktakahiro/youtube-url-parser'
 import TextField from '@/components/atoms/TextField.vue'
 import {
   ref
@@ -29,8 +31,14 @@ export default {
     const router = useRouter()
 
     const onEntered = () => {
-      const searchTarget = searchValue.value
-      router.push(`/${searchTarget}`)
+      const parser = new YouTubeURLParser(searchValue.value)
+
+      let videoId = searchValue.value
+      if (parser.isValid()) {
+        videoId = parser.getId()
+      }
+
+      router.push(`/${videoId}`)
     }
 
     return {
