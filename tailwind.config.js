@@ -1,5 +1,10 @@
 module.exports = {
-  purge: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
+  purge: {
+    content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
+    options: {
+      safelist: [/^bg-/, /^text-/, /^border-/, /^hover:bg-/, /^hover:text-/]
+    }
+  },
   darkMode: false, // or 'media' or 'class'
   theme: {
     extend: {},
@@ -9,5 +14,5 @@ module.exports = {
   },
   plugins: [
     require('@vueform/slider/tailwind')
-  ],
+  ]
 }

@@ -7,6 +7,7 @@
     "serve": "vite preview"
   },
   "dependencies": {
+    "@iktakahiro/youtube-url-parser": "^1.0.2",
     "@types/youtube": "^0.0.45",
     "@types/youtube-player": "^5.5.4",
     "@vueform/slider": "^2.0.5",
