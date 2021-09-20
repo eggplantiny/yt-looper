@@ -5,6 +5,8 @@ import {
   onUnmounted
 } from "vue"
 
+type BreakPoint = 'xs' | 'md' | 'lg'
+
 export default function useBreakpoints () {
   let windowWidth = ref(window.innerWidth)
   
@@ -12,7 +14,7 @@ export default function useBreakpoints () {
   onMounted(() => window.addEventListener('resize', onWidthChange))
   onUnmounted(() => window.removeEventListener('resize', onWidthChange))
 
-  const type = computed(() => {
+  const type = computed<BreakPoint>(() => {
     if (windowWidth.value < 550) return 'xs'
     if (windowWidth.value > 549 && windowWidth.value < 1200) return 'md'
     if (windowWidth.value > 1199) return 'lg'

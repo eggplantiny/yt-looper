@@ -1,6 +1,6 @@
 <template>
   <button
-    class="font-bold py-2 px-4 rounded"
+    class="font-bold py-2 px-4 rounded transition-colors"
     :class="computedClass"
   >
     <slot />

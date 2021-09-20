@@ -50,3 +50,8 @@ export declare namespace Components {
     value: any
   }
 }
+
+export interface ISize {
+  width: number
+  height: number
+}

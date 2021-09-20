@@ -13,7 +13,7 @@ import {
   onMounted,
   onBeforeUnmount,
   PropType,
-  Ref
+  Ref, toRefs
 } from 'vue'
 
 import Player from 'youtube-player'
@@ -63,18 +63,25 @@ const props = defineProps({
     default: () => ({
       autoplay: 1
     })
+  },
+  repeat: {
+    type: Boolean,
+    default: true
   }
 })
 
 const emit = defineEmits(['ended', 'paused', 'play', 'buffering', 'time'])
 let player: Ref<YouTubePlayer> = ref()
 
-const videoId = ref(props.videoId)
+const propRef = toRefs(props)
+
 const playTime = ref<number>(0)
 const callbackId = ref<number>(0)
 const cancelStatus = ref<boolean>(false)
 const initialized = ref<boolean>(false)
-const lastTime = ref<number>(props.timing)
+const videoId = propRef.videoId
+const lastTime = propRef.timing
+const widthRef = propRef.width
 
 const animationFrameHook = async () => {
 
@@ -159,7 +166,13 @@ onMounted(async () => {
   player.value.on('stateChange', async (e) => {
     if (e.data === YT.PlayerState.ENDED) {
       pausePlayer()
-      emit('ended', playTime.value)
+      if (props.repeat === false) {
+        emit('ended', playTime.value)
+      } else {
+        await nextTick()
+        seekTo(0)
+        playVideo()
+      }
     } else if (e.data === YT.PlayerState.PAUSED) {
       pausePlayer()
       emit('paused', playTime.value)
@@ -195,6 +208,11 @@ watch(videoId, async () => {
   await player.value.loadVideoById(videoId.value)
   player.value.playVideo()
 })
+
+watch(widthRef, () => {
+  player.value.setSize(widthRef.value, props.height)
+})
+
 </script>
 
 <style scoped lang="scss">

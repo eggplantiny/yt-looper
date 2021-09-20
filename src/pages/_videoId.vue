@@ -6,6 +6,8 @@
         ref="player"
         :video-id="videoId"
         :autoplay="0"
+        :width="playerSize.width"
+        :height="playerSize.height"
         @time="onTime"
         @play="onPlay"
       />
@@ -36,17 +38,25 @@
         @change="onChangeRange"
       />
 
-      <div class="mt-2 flex items-center">
+      <div class="mt-2 flex items-center justify-between">
         <span>
-            {{ slider.range[0] }} sec - {{ slider.range[1] }} sec
-          </span>
-        <a-button
-          color="indigo"
-          class="ml-auto"
-          @click="loop.saveLoop"
-        >
-          Save
-        </a-button>
+          {{ slider.range[0] }} sec - {{ slider.range[1] }} sec
+        </span>
+        <div>
+          <a-button
+            color="green"
+            @click="onClickCopyCurrent"
+          >
+            copy
+          </a-button>
+          <a-button
+            color="indigo"
+            class="ml-2"
+            @click="loop.saveLoop"
+          >
+            Save
+          </a-button>
+        </div>
       </div>
     </div>
     <template
@@ -54,26 +64,30 @@
       :key="index"
     >
       <div class="mt-8 rounded-2xl shadow-lg px-8 py-4">
-        <div class="flex justify-between">
-          <span>
+        <div>
             {{ item.start }} sec - {{ item.end }} sec
-          </span>
-          <div class="ml-auto">
-            <a-button
-              color="red"
-              @click="loop.deleteLoop(item)"
-            >
-              delete
-            </a-button>
-
-            <a-button
-              color="indigo"
-              class="ml-2"
-              @click="onClickApplyLoop(item)"
-            >
-              Apply
-            </a-button>
-          </div>
+        </div>
+        <div class="flex justify-end mt-3">
+          <a-button
+            color="green"
+            @click="onClickCopy(item)"
+          >
+            copy
+          </a-button>
+          <a-button
+            color="red"
+            class="ml-2"
+            @click="loop.deleteLoop(item)"
+          >
+            delete
+          </a-button>
+          <a-button
+            color="indigo"
+            class="ml-2"
+            @click="onClickApplyLoop(item)"
+          >
+            Apply
+          </a-button>
         </div>
       </div>
     </template>
@@ -92,14 +106,16 @@ import {
 import {
   nanoid
 } from "nanoid"
+import { notify } from "@kyvg/vue3-notification"
 import { useRoute, useRouter } from 'vue-router'
+import useBreakpoints from '@/compositions/useBreakpoints'
 import Slider from '@vueform/slider'
 import AButton from "@/components/atoms/AButton.vue"
 import DropdownMenu from "@/components/molecules/DropdownMenu.vue"
 import YoutubePlayer from '@/components/atoms/YoutubePlayer.vue'
 import TextField from '@/components/atoms/TextField.vue'
 
-import { Loop } from "@/types"
+import { ISize, Loop } from '@/types'
 
 
 function generatePath (fullPath) {
@@ -118,10 +134,29 @@ export default defineComponent({
   setup () {
     const route = useRoute()
     const router = useRouter()
+    const breakpoints = useBreakpoints()
     const videoId = computed<string>(() => `${route.params.videoId || ''}`)
     const player = ref(null)
     const playTime = ref(0)
     const currentPath = computed(() => `${location.host}${route.fullPath}`)
+    const playerSize = computed<ISize>(() => {
+      if (breakpoints.type.value === 'xs') {
+        return {
+          width: 320,
+          height: 240
+        }
+      } else if (breakpoints.type.value === 'md') {
+        return {
+          width: 480,
+          height: 320
+        }
+      } else {
+        return {
+          width: 640,
+          height: 480
+        }
+      }
+    })
 
     const loopList = ref<Loop[]>([])
     const sortedLoopList = computed(() => loopList.value.sort((a, b) => a.createdAt - b.createdAt ? -1 : 1))
@@ -216,6 +251,16 @@ export default defineComponent({
       player.value.playVideo()
     }
 
+    const onClickCopy = async (loop: Loop) => {
+      await navigator.clipboard.writeText(loop.url)
+      alert('Copied 😉')
+    }
+
+    const onClickCopyCurrent = async () => {
+      await navigator.clipboard.writeText(currentPath.value)
+      alert('Copied 😉')
+    }
+
     watch(videoId, async () => {
       ready.value = false
       await player.value.loadVideoById(videoId.value)
@@ -247,10 +292,13 @@ export default defineComponent({
       playbackRate,
       loopList,
       loop,
+      playerSize,
       onTime,
       onPlay,
       onChangeRange,
-      onClickApplyLoop
+      onClickApplyLoop,
+      onClickCopy,
+      onClickCopyCurrent
     }
   }
 })

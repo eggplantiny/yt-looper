@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "@iktakahiro/youtube-url-parser": "^1.0.2",
+    "@kyvg/vue3-notification": "^2.3.4",
     "@types/youtube": "^0.0.45",
     "@types/youtube-player": "^5.5.4",
     "@vueform/slider": "^2.0.5",
