@@ -2,6 +2,7 @@
   <button
     class="font-bold py-2 px-4 rounded transition-colors"
     :class="computedClass"
+    :style="computedStyle"
   >
     <slot />
   </button>
@@ -31,6 +32,10 @@ export default {
     text: {
       type: String as PropType<Tailwind.Color>,
       default: 'white'
+    },
+    height: {
+      type: Number,
+      default: 48
     }
   },
   setup (props) {
@@ -47,8 +52,16 @@ export default {
       return [...bgClasses, ...textClasses]
     })
 
+    const computedStyle = computed(() => {
+      const height = `${props.height}px`
+      return {
+        height
+      }
+    })
+
     return {
-      computedClass
+      computedClass,
+      computedStyle
     }
   }
 }

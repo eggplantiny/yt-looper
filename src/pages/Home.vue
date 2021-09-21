@@ -1,10 +1,18 @@
 <template>
-  <div class="mt-16">
+  <div class="mt-16 flex items-center">
     <text-field
       v-model="searchValue"
       placeholder="Youtube Video URL or ID"
-      @keydown.enter="onEntered"
+      class="w-full text-center"
+      @keydown.enter="search"
     />
+    <a-button
+      class="ml-4"
+      height="60"
+      @click="search"
+    >
+      Search
+    </a-button>
   </div>
 </template>
 
@@ -19,10 +27,12 @@ import {
   useRoute,
   useRouter
 } from "vue-router"
+import AButton from '../components/atoms/AButton.vue'
 
 export default {
   name: 'Home',
   components: {
+    AButton,
     TextField
   },
   setup () {
@@ -30,7 +40,7 @@ export default {
     const route = useRoute()
     const router = useRouter()
 
-    const onEntered = () => {
+    const search = () => {
       const parser = new YouTubeURLParser(searchValue.value)
 
       let videoId = searchValue.value
@@ -43,7 +53,7 @@ export default {
 
     return {
       searchValue,
-      onEntered
+      search
     }
   }
 }
