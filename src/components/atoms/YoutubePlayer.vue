@@ -83,7 +83,7 @@ const videoId = propRef.videoId
 const lastTime = propRef.timing
 const widthRef = propRef.width
 
-const animationFrameHook = async () => {
+const tick = async () => {
 
   if (cancelStatus.value === true) {
     cancelStatus.value = false
@@ -100,18 +100,18 @@ const animationFrameHook = async () => {
     await delay(timingDiff)
   }
 
-  callbackId.value = requestAnimationFrame(animationFrameHook)
+  callbackId.value = requestAnimationFrame(tick)
   emit('time', playTime.value)
 }
 
-const startPlayer = async () => {
+const startPlayer = () => {
   cancelStatus.value = false
 
   if (initialized.value === false) {
     initialized.value = true
   }
 
-  return animationFrameHook()
+  tick()
 }
 
 const pausePlayer = () => {

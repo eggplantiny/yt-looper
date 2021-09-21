@@ -21,9 +21,9 @@
           <a-button
             height="44.5"
             :color="tabToLoopBtnColor"
-            @click="onClickTapToLoop"
+            @click="onClick.tapToLoop"
           >
-            Tab To Loop
+            A-B Loop
           </a-button>
           <dropdown-menu
             v-model="playbackRate.value"
@@ -54,9 +54,16 @@
       <div class="mt-2 flex justify-end">
         <a-button
           color="green"
-          @click="onClickCopy()"
+          @click="onClick.copy()"
         >
-          copy
+          Copy
+        </a-button>
+        <a-button
+          color="blue"
+          class="ml-2"
+          @click="onClick.clearLoop"
+        >
+          Clear
         </a-button>
         <a-button
           color="indigo"
@@ -78,21 +85,21 @@
         <div class="flex justify-end mt-3">
           <a-button
             color="green"
-            @click="onClickCopy(item)"
+            @click="onClick.copy(item)"
           >
-            copy
+            Copy
           </a-button>
           <a-button
             color="red"
             class="ml-2"
             @click="loop.deleteLoop(item)"
           >
-            delete
+            Delete
           </a-button>
           <a-button
             color="indigo"
             class="ml-2"
-            @click="onClickApplyLoop(item)"
+            @click="onClick.applyLoop(item)"
           >
             Apply
           </a-button>
@@ -114,9 +121,9 @@ import {
 import {
   nanoid
 } from "nanoid"
-import { notify } from "@kyvg/vue3-notification"
 import { useRoute, useRouter } from 'vue-router'
 import useBreakpoints from '@/compositions/useBreakpoints'
+import useNotify from '@/compositions/useNotify'
 import Slider from '@vueform/slider'
 import AButton from "@/components/atoms/AButton.vue"
 import DropdownMenu from "@/components/molecules/DropdownMenu.vue"
@@ -124,6 +131,7 @@ import YoutubePlayer from '@/components/atoms/YoutubePlayer.vue'
 import TextField from '@/components/atoms/TextField.vue'
 
 import { ISize, Loop } from '@/types'
+import { info } from 'autoprefixer'
 
 export default defineComponent({
   name: 'Home',
@@ -138,6 +146,7 @@ export default defineComponent({
     const route = useRoute()
     const router = useRouter()
     const breakpoints = useBreakpoints()
+    const { success, info, danger, warning } = useNotify()
     const videoId = computed<string>(() => `${route.params.videoId || ''}`)
     const player = ref(null)
     const playTime = ref(0)
@@ -212,9 +221,11 @@ export default defineComponent({
       }
     }
 
-    const onPlay = () => {
+    const onPlay = async () => {
+      const max = await player.value.getDuration()
+      slider.max = max
       let start = 0
-      let end = slider.max
+      let end = max
 
       if (route.query.s && !isNaN(Number(route.query.s))) {
         start = Number(route.query.s)
@@ -228,9 +239,9 @@ export default defineComponent({
       ready.value = true
     }
 
-    const initialize = async () => {
-      await nextTick()
-      slider.max = await player.value.getDuration()
+    const initialize = () => {
+      ready.value = false
+      loop.loadLoop()
     }
 
     const loop = reactive({
@@ -247,6 +258,7 @@ export default defineComponent({
         localStorage.setItem(videoId.value, JSON.stringify(loopList.value))
       },
       loadLoop () {
+        loop.clearLoopList()
         const item = localStorage.getItem(videoId.value)
         if (!item) {
           return
@@ -258,47 +270,56 @@ export default defineComponent({
       deleteLoop (loop: Loop) {
         loopList.value = loopList.value.filter((item: Loop) => item.id !== loop.id)
         localStorage.setItem(videoId.value, JSON.stringify(loopList.value))
+      },
+      clearLoopList () {
+        loopList.value = []
       }
     })
 
-    const onClickApplyLoop = (loop: Loop) => {
-      player.value.pauseVideo()
-      router.push(loop.url)
-      player.value.playVideo()
-    }
-
-    const onClickCopy = async (loop?: Loop) => {
-      let url = ''
-      if (!loop) {
-        url = currentPath.value
-      } else {
-        url = loop.url
-      }
-      await navigator.clipboard.writeText(url)
-      alert('Copied on clipboard 😉')
-    }
-
-    const onClickTapToLoop = () => {
-      if (tabToLoop.tabMode === 0) {
-        tabToLoop.start = playTime.value
-        router.push({ path: route.path, query: { s: playTime.value, e: slider.max } })
-        tabToLoop.tabMode = 1
-      }
-      else if (tabToLoop.tabMode === 1) {
-        tabToLoop.end = playTime.value
-        if (tabToLoop.start < tabToLoop.end) {
-          router.push({ path: route.path, query: { s: tabToLoop.start, e: tabToLoop.end } })
+    const onClick = reactive({
+      async applyLoop (loop: Loop) {
+        player.value.pauseVideo()
+        await router.push(loop.url)
+        await nextTick()
+        player.value.playVideo()
+        success(`Applied loop ${loop.start}s - ${loop.end}s ☺️`)
+      },
+      async copy (loop?: Loop) {
+        let url = ''
+        if (!loop) {
+          url = currentPath.value
+        } else {
+          url = loop.url
         }
-        tabToLoop.start = 0
-        tabToLoop.end = 0
-        tabToLoop.tabMode = 0
+        await navigator.clipboard.writeText(url)
+        success('URL copied on clipboard 😊')
+      },
+      tapToLoop () {
+        if (tabToLoop.tabMode === 0) {
+          tabToLoop.start = playTime.value
+          router.push({ path: route.path, query: { s: playTime.value, e: slider.max } })
+          tabToLoop.tabMode = 1
+          info('Success set A point')
+        }
+        else if (tabToLoop.tabMode === 1) {
+          tabToLoop.end = playTime.value
+          if (tabToLoop.start < tabToLoop.end) {
+            router.push({ path: route.path, query: { s: tabToLoop.start, e: tabToLoop.end } })
+          }
+          tabToLoop.start = 0
+          tabToLoop.end = 0
+          tabToLoop.tabMode = 0
+          info('Success set A-B Loop ✔️')
+        }
+      },
+      clearLoop () {
+        success('Success clear loop 😎')
+        router.push({ path: route.path })
       }
-    }
+    })
 
     watch(videoId, async () => {
-      ready.value = false
-      await player.value.loadVideoById(videoId.value)
-      await initialize()
+      location.reload()
     })
 
     watch(queryRef, async () => {
@@ -332,9 +353,7 @@ export default defineComponent({
       onTime,
       onPlay,
       onChangeRange,
-      onClickApplyLoop,
-      onClickCopy,
-      onClickTapToLoop
+      onClick
     }
   }
 })
