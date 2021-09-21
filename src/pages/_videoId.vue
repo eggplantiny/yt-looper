@@ -170,7 +170,7 @@ export default defineComponent({
       min: 0,
       max: 0,
       step: 0.1,
-      format: (value) => `${Number(value).toFixed(2)} 초`
+      format: (value) => `${Number(value).toFixed(2)} s`
     })
 
     const sliderRef = toRef(slider, 'range')
