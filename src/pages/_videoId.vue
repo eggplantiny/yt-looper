@@ -13,14 +13,22 @@
       />
     </div>
     <div class="mt-8 rounded-2xl shadow-lg px-8 py-4">
-      <div class="flex justify-between items-center">
-        <span>
-          {{ playTime.toFixed(2) }} sec
-        </span>
-        <div>
+      <span>
+        {{ playTime.toFixed(2) }} s
+      </span>
+      <div class="mt-2">
+        <div class="flex justify-end">
+          <a-button
+            height="44.5"
+            :color="tabToLoopBtnColor"
+            @click="onClickTapToLoop"
+          >
+            Tab To Loop
+          </a-button>
           <dropdown-menu
             v-model="playbackRate.value"
             :items="playbackRate.items"
+            class="ml-2"
           >
             {{ playbackRate.value.toFixed(2) }} x
           </dropdown-menu>
@@ -38,25 +46,25 @@
         @change="onChangeRange"
       />
 
-      <div class="mt-2 flex items-center justify-between">
+      <div class="mt-2">
         <span>
           {{ slider.range[0] }} sec - {{ slider.range[1] }} sec
         </span>
-        <div>
-          <a-button
-            color="green"
-            @click="onClickCopyCurrent"
-          >
-            copy
-          </a-button>
-          <a-button
-            color="indigo"
-            class="ml-2"
-            @click="loop.saveLoop"
-          >
-            Save
-          </a-button>
-        </div>
+      </div>
+      <div class="mt-2 flex justify-end">
+        <a-button
+          color="green"
+          @click="onClickCopy()"
+        >
+          copy
+        </a-button>
+        <a-button
+          color="indigo"
+          class="ml-2"
+          @click="loop.saveLoop"
+        >
+          Save
+        </a-button>
       </div>
     </div>
     <template
@@ -65,7 +73,7 @@
     >
       <div class="mt-8 rounded-2xl shadow-lg px-8 py-4">
         <div>
-            {{ item.start }} sec - {{ item.end }} sec
+            {{ item.start }} s - {{ item.end }} s
         </div>
         <div class="flex justify-end mt-3">
           <a-button
@@ -117,11 +125,6 @@ import TextField from '@/components/atoms/TextField.vue'
 
 import { ISize, Loop } from '@/types'
 
-
-function generatePath (fullPath) {
-  return `${location.host}${fullPath}`
-}
-
 export default defineComponent({
   name: 'Home',
   components: {
@@ -138,6 +141,13 @@ export default defineComponent({
     const videoId = computed<string>(() => `${route.params.videoId || ''}`)
     const player = ref(null)
     const playTime = ref(0)
+    const tabToLoopBtnColor = computed(() => {
+      if (tabToLoop.tabMode === 0) {
+        return 'indigo'
+      } else {
+        return 'green'
+      }
+    })
     const currentPath = computed(() => `${location.host}${route.fullPath}`)
     const playerSize = computed<ISize>(() => {
       if (breakpoints.type.value === 'xs') {
@@ -156,6 +166,12 @@ export default defineComponent({
           height: 480
         }
       }
+    })
+
+    const tabToLoop = reactive({
+      start: 0,
+      end: 0,
+      tabMode: 0
     })
 
     const loopList = ref<Loop[]>([])
@@ -251,14 +267,32 @@ export default defineComponent({
       player.value.playVideo()
     }
 
-    const onClickCopy = async (loop: Loop) => {
-      await navigator.clipboard.writeText(loop.url)
-      alert('Copied 😉')
+    const onClickCopy = async (loop?: Loop) => {
+      let url = ''
+      if (!loop) {
+        url = currentPath.value
+      } else {
+        url = loop.url
+      }
+      await navigator.clipboard.writeText(url)
+      alert('Copied on clipboard 😉')
     }
 
-    const onClickCopyCurrent = async () => {
-      await navigator.clipboard.writeText(currentPath.value)
-      alert('Copied 😉')
+    const onClickTapToLoop = () => {
+      if (tabToLoop.tabMode === 0) {
+        tabToLoop.start = playTime.value
+        router.push({ path: route.path, query: { s: playTime.value, e: slider.max } })
+        tabToLoop.tabMode = 1
+      }
+      else if (tabToLoop.tabMode === 1) {
+        tabToLoop.end = playTime.value
+        if (tabToLoop.start < tabToLoop.end) {
+          router.push({ path: route.path, query: { s: tabToLoop.start, e: tabToLoop.end } })
+        }
+        tabToLoop.start = 0
+        tabToLoop.end = 0
+        tabToLoop.tabMode = 0
+      }
     }
 
     watch(videoId, async () => {
@@ -293,12 +327,14 @@ export default defineComponent({
       loopList,
       loop,
       playerSize,
+      tabToLoop,
+      tabToLoopBtnColor,
       onTime,
       onPlay,
       onChangeRange,
       onClickApplyLoop,
       onClickCopy,
-      onClickCopyCurrent
+      onClickTapToLoop
     }
   }
 })

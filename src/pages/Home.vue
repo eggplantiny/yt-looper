@@ -37,7 +37,6 @@ export default {
   },
   setup () {
     const searchValue = ref('')
-    const route = useRoute()
     const router = useRouter()
 
     const search = () => {
