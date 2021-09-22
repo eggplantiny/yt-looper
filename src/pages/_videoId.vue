@@ -256,6 +256,7 @@ export default defineComponent({
 
         loopList.value.push(loop)
         localStorage.setItem(videoId.value, JSON.stringify(loopList.value))
+        success(`✔️ Saved loop`)
       },
       loadLoop () {
         loop.clearLoopList()
@@ -270,9 +271,11 @@ export default defineComponent({
       deleteLoop (loop: Loop) {
         loopList.value = loopList.value.filter((item: Loop) => item.id !== loop.id)
         localStorage.setItem(videoId.value, JSON.stringify(loopList.value))
+        success(`✔️ Deleted loop`)
       },
       clearLoopList () {
         loopList.value = []
+        success(`✔️ Cleared loop`)
       }
     })
 
@@ -282,7 +285,7 @@ export default defineComponent({
         await router.push(loop.url)
         await nextTick()
         player.value.playVideo()
-        success(`Applied loop ${loop.start}s - ${loop.end}s ☺️`)
+        success(`✔️ Applied loop ${loop.start}s - ${loop.end}s`)
       },
       async copy (loop?: Loop) {
         let url = ''
@@ -292,14 +295,14 @@ export default defineComponent({
           url = loop.url
         }
         await navigator.clipboard.writeText(url)
-        success('URL copied on clipboard 😊')
+        success('✔️ URL copied on clipboard')
       },
       tapToLoop () {
         if (tabToLoop.tabMode === 0) {
           tabToLoop.start = playTime.value
           router.push({ path: route.path, query: { s: playTime.value, e: slider.max } })
           tabToLoop.tabMode = 1
-          info('Success set A point')
+          info('✔️ Success set A point')
         }
         else if (tabToLoop.tabMode === 1) {
           tabToLoop.end = playTime.value
@@ -309,11 +312,11 @@ export default defineComponent({
           tabToLoop.start = 0
           tabToLoop.end = 0
           tabToLoop.tabMode = 0
-          info('Success set A-B Loop ✔️')
+          info('✔️ Success set A-B Loop')
         }
       },
       clearLoop () {
-        success('Success clear loop 😎')
+        success('✔️ Success clear loop')
         router.push({ path: route.path })
       }
     })
