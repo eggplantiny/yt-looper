@@ -275,7 +275,6 @@ export default defineComponent({
       },
       clearLoopList () {
         loopList.value = []
-        success(`✔️ Cleared loop`)
       }
     })
 
