@@ -74,38 +74,42 @@
         </a-button>
       </div>
     </div>
-    <template
-      v-for="(item, index) in sortedLoopList"
-      :key="index"
+    <transition-group
+      name="fade"
     >
-      <div class="mt-8 rounded-2xl shadow-lg px-8 py-4 bg-purple-100">
-        <div>
+      <template
+        v-for="(item, index) in sortedLoopList"
+        :key="index"
+      >
+        <div class="mt-8 rounded-2xl shadow-lg px-8 py-4 bg-purple-100">
+          <div>
             {{ item.start }} s - {{ item.end }} s
+          </div>
+          <div class="flex justify-end mt-3">
+            <a-button
+              color="green"
+              @click="onClick.copy(item)"
+            >
+              Copy
+            </a-button>
+            <a-button
+              color="red"
+              class="ml-2"
+              @click="loop.deleteLoop(item)"
+            >
+              Delete
+            </a-button>
+            <a-button
+              color="indigo"
+              class="ml-2"
+              @click="onClick.applyLoop(item)"
+            >
+              Apply
+            </a-button>
+          </div>
         </div>
-        <div class="flex justify-end mt-3">
-          <a-button
-            color="green"
-            @click="onClick.copy(item)"
-          >
-            Copy
-          </a-button>
-          <a-button
-            color="red"
-            class="ml-2"
-            @click="loop.deleteLoop(item)"
-          >
-            Delete
-          </a-button>
-          <a-button
-            color="indigo"
-            class="ml-2"
-            @click="onClick.applyLoop(item)"
-          >
-            Apply
-          </a-button>
-        </div>
-      </div>
-    </template>
+      </template>
+    </transition-group>
   </section>
 </template>
 
