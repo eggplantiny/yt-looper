@@ -1,5 +1,5 @@
 <template>
-  <div class="mt-16 flex items-center">
+  <div class="mt-8 flex items-center">
 
   </div>
 </template>

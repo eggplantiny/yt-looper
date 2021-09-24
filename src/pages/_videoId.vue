@@ -2,7 +2,7 @@
   <section>
     <div class="mx-auto">
       <youtube-player
-        class="py-8 px-8 shadow-lg rounded-2xl"
+        class="py-6 px-6 shadow-lg rounded-2xl bg-purple-100"
         ref="player"
         :video-id="videoId"
         :autoplay="0"
@@ -12,7 +12,7 @@
         @play="onPlay"
       />
     </div>
-    <div class="mt-8 rounded-2xl shadow-lg px-8 py-4">
+    <div class="mt-8 rounded-2xl shadow-lg px-8 py-4 bg-purple-100">
       <span>
         {{ playTime.toFixed(2) }} s
       </span>
@@ -35,7 +35,7 @@
         </div>
       </div>
     </div>
-    <div class="mt-8 rounded-2xl shadow-lg px-8 py-4">
+    <div class="mt-8 rounded-2xl shadow-lg px-8 py-4 bg-purple-100">
       <slider
         v-model="sliderValue"
         class="slider-indigo"
@@ -78,7 +78,7 @@
       v-for="(item, index) in sortedLoopList"
       :key="index"
     >
-      <div class="mt-8 rounded-2xl shadow-lg px-8 py-4">
+      <div class="mt-8 rounded-2xl shadow-lg px-8 py-4 bg-purple-100">
         <div>
             {{ item.start }} s - {{ item.end }} s
         </div>
