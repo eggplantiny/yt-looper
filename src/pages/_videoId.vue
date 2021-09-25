@@ -1,8 +1,10 @@
 <template>
   <section>
-    <div class="mx-auto">
+    <div
+      ref="playerWrapper"
+      class="mt-6 rounded-2xl shadow-lg px-4 py-4 bg-purple-100"
+    >
       <youtube-player
-        class="py-6 px-6 shadow-lg rounded-2xl bg-purple-100"
         ref="player"
         :video-id="videoId"
         :autoplay="0"
@@ -12,7 +14,7 @@
         @play="onPlay"
       />
     </div>
-    <div class="mt-8 rounded-2xl shadow-lg px-8 py-4 bg-purple-100">
+    <div class="mt-6 rounded-2xl shadow-lg px-8 py-4 bg-purple-100">
       <span>
         {{ playTime.toFixed(2) }} s
       </span>
@@ -35,7 +37,7 @@
         </div>
       </div>
     </div>
-    <div class="mt-8 rounded-2xl shadow-lg px-8 py-4 bg-purple-100">
+    <div class="mt-6 rounded-2xl shadow-lg px-8 py-4 bg-purple-100">
       <slider
         v-model="sliderValue"
         class="slider-indigo"
@@ -81,7 +83,7 @@
         v-for="(item, index) in sortedLoopList"
         :key="index"
       >
-        <div class="mt-8 rounded-2xl shadow-lg px-8 py-4 bg-purple-100">
+        <div class="mt-6 rounded-2xl shadow-lg px-8 py-4 bg-purple-100">
           <div>
             {{ item.start }} s - {{ item.end }} s
           </div>
@@ -152,7 +154,15 @@ export default defineComponent({
     const breakpoints = useBreakpoints()
     const { success, info, danger, warning } = useNotify()
     const videoId = computed<string>(() => `${route.params.videoId || ''}`)
+    const playerWrapper = ref(null)
     const player = ref(null)
+    const playerWrapperWidth = computed(() => {
+      if (!playerWrapper.value) {
+        return 100
+      }
+      const computedStyle = getComputedStyle(playerWrapper.value)
+      return playerWrapper.value?.clientWidth - parseFloat(computedStyle.paddingLeft) - parseFloat(computedStyle.paddingRight)
+    })
     const playTime = ref(0)
     const tabToLoopBtnColor = computed(() => {
       if (tabToLoop.tabMode === 0) {
@@ -162,24 +172,10 @@ export default defineComponent({
       }
     })
     const currentPath = computed(() => `${location.host}${route.fullPath}`)
-    const playerSize = computed<ISize>(() => {
-      if (breakpoints.type.value === 'xs') {
-        return {
-          width: 320,
-          height: 240
-        }
-      } else if (breakpoints.type.value === 'md') {
-        return {
-          width: 480,
-          height: 320
-        }
-      } else {
-        return {
-          width: 640,
-          height: 480
-        }
-      }
-    })
+    const playerSize = computed<ISize>(() => ({
+      width: playerWrapperWidth.value,
+      height: playerWrapperWidth.value * 0.5625
+    }))
 
     const tabToLoop = reactive({
       start: 0,
@@ -337,6 +333,10 @@ export default defineComponent({
       player.value.setPlaybackRate(value)
     })
 
+    // watch(playerSize, () => {
+    //   player.value.setSize(playerSize.value.width, playerSize.value.height)
+    // })
+
     onMounted(() => {
       loop.loadLoop()
       initialize()
@@ -344,6 +344,8 @@ export default defineComponent({
 
     return {
       player,
+      playerWrapper,
+      playerWrapperWidth,
       playTime,
       videoId,
       slider,

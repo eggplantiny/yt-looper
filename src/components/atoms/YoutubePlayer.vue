@@ -149,12 +149,18 @@ const playVideo = () => {
   player.value.playVideo()
 }
 
+const setSize = (width, height) => {
+  player.value.setSize(width, height)
+}
+
 onMounted(async () => {
   await nextTick()
 
   if (player.value) {
     return
   }
+
+  console.log('fucking initializing', props.width, props.height)
 
   player.value = Player(props.elementId, {
     width: props.width,
@@ -200,7 +206,8 @@ defineExpose({
   loadVideoById,
   setPlaybackRate,
   pauseVideo,
-  playVideo
+  playVideo,
+  setSize
 })
 
 watch(videoId, async () => {
@@ -209,9 +216,9 @@ watch(videoId, async () => {
   player.value.playVideo()
 })
 
-watch(widthRef, () => {
-  player.value.setSize(widthRef.value, props.height)
-})
+// watch(widthRef, () => {
+//   player.value.setSize(widthRef.value, props.height)
+// })
 
 </script>
 
