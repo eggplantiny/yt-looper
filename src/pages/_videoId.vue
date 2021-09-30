@@ -10,8 +10,8 @@
         :autoplay="0"
         :width="playerSize.width"
         :height="playerSize.height"
-        @time="onTime"
-        @play="onPlay"
+        @time="events.onTime"
+        @play="events.onPlay"
       />
     </div>
     <div class="mt-6 rounded-2xl shadow-lg px-8 py-4 bg-purple-100">
@@ -45,7 +45,7 @@
         :min="slider.min"
         :step="slider.step"
         :format="slider.format"
-        @change="onChangeRange"
+        @change="events.onChangeRange"
       />
 
       <div class="mt-2">
@@ -139,6 +139,18 @@ import TextField from '@/components/atoms/TextField.vue'
 import { ISize, Loop } from '@/types'
 import { info } from 'autoprefixer'
 
+function calculatePlayerSize (playerWrapper): ISize {
+  let width = 100
+  if (playerWrapper.value) {
+    const computedStyle = getComputedStyle(playerWrapper.value)
+    width = playerWrapper.value?.clientWidth - parseFloat(computedStyle.paddingLeft) - parseFloat(computedStyle.paddingRight)
+  }
+  const height = width * 0.5625
+  return {
+    width, height
+  }
+}
+
 export default defineComponent({
   name: 'Home',
   components: {
@@ -156,13 +168,6 @@ export default defineComponent({
     const videoId = computed<string>(() => `${route.params.videoId || ''}`)
     const playerWrapper = ref(null)
     const player = ref(null)
-    const playerWrapperWidth = computed(() => {
-      if (!playerWrapper.value) {
-        return 100
-      }
-      const computedStyle = getComputedStyle(playerWrapper.value)
-      return playerWrapper.value?.clientWidth - parseFloat(computedStyle.paddingLeft) - parseFloat(computedStyle.paddingRight)
-    })
     const playTime = ref(0)
     const tabToLoopBtnColor = computed(() => {
       if (tabToLoop.tabMode === 0) {
@@ -172,10 +177,10 @@ export default defineComponent({
       }
     })
     const currentPath = computed(() => `${location.host}${route.fullPath}`)
-    const playerSize = computed<ISize>(() => ({
-      width: playerWrapperWidth.value,
-      height: playerWrapperWidth.value * 0.5625
-    }))
+    const playerSize = ref<ISize>({
+      width: 320,
+      height: 180
+    })
 
     const tabToLoop = reactive({
       start: 0,
@@ -202,42 +207,6 @@ export default defineComponent({
     const playbackRateRef = toRef(playbackRate, 'value')
     const queryRef = toRef(route, 'query')
     const ready = ref(false)
-
-    const onChangeRange = (value) => {
-      router.push({ path: route.path, query: { s: value[0], e: value[1] } })
-    }
-
-    const onTime = async (time: number) => {
-      if (ready.value === false) {
-        return
-      }
-
-      playTime.value = time
-
-      if (time > slider.range[1]) {
-        player.value.seekTo(slider.range[0])
-      } else if (time < slider.range[0]) {
-        player.value.seekTo(slider.range[0])
-      }
-    }
-
-    const onPlay = async () => {
-      const max = await player.value.getDuration()
-      slider.max = max
-      let start = 0
-      let end = max
-
-      if (route.query.s && !isNaN(Number(route.query.s))) {
-        start = Number(route.query.s)
-      }
-
-      if (route.query.e && !isNaN(Number(route.query.e))) {
-        end = Number(route.query.e)
-      }
-
-      slider.range = [start, end]
-      ready.value = true
-    }
 
     const initialize = () => {
       ready.value = false
@@ -320,6 +289,42 @@ export default defineComponent({
       }
     })
 
+    const events = reactive({
+      onChangeRange (value) {
+        router.push({ path: route.path, query: { s: value[0], e: value[1] } })
+      },
+      async onTime (value: number) {
+        if (ready.value === false) {
+          return
+        }
+
+        playTime.value = value
+
+        if (value > slider.range[1]) {
+          player.value.seekTo(slider.range[0])
+        } else if (value < slider.range[0]) {
+          player.value.seekTo(slider.range[0])
+        }
+      },
+      async onPlay () {
+        const max = await player.value.getDuration()
+        slider.max = max
+        let start = 0
+        let end = max
+
+        if (route.query.s && !isNaN(Number(route.query.s))) {
+          start = Number(route.query.s)
+        }
+
+        if (route.query.e && !isNaN(Number(route.query.e))) {
+          end = Number(route.query.e)
+        }
+
+        slider.range = [start, end]
+        ready.value = true
+      }
+    })
+
     watch(videoId, async () => {
       location.reload()
     })
@@ -333,11 +338,16 @@ export default defineComponent({
       player.value.setPlaybackRate(value)
     })
 
-    // watch(playerSize, () => {
-    //   player.value.setSize(playerSize.value.width, playerSize.value.height)
-    // })
+    watch(breakpoints.width, async () => {
+      await nextTick()
+      const { width, height } = calculatePlayerSize(playerWrapper)
+      playerSize.value = { width, height }
+    }, {
+      immediate: true
+    })
 
-    onMounted(() => {
+
+    onMounted(async () => {
       loop.loadLoop()
       initialize()
     })
@@ -345,7 +355,6 @@ export default defineComponent({
     return {
       player,
       playerWrapper,
-      playerWrapperWidth,
       playTime,
       videoId,
       slider,
@@ -358,9 +367,7 @@ export default defineComponent({
       playerSize,
       tabToLoop,
       tabToLoopBtnColor,
-      onTime,
-      onPlay,
-      onChangeRange,
+      events,
       onClick
     }
   }

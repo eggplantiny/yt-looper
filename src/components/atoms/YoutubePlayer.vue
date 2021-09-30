@@ -160,8 +160,6 @@ onMounted(async () => {
     return
   }
 
-  console.log('fucking initializing', props.width, props.height)
-
   player.value = Player(props.elementId, {
     width: props.width,
     height: props.height,
@@ -216,9 +214,9 @@ watch(videoId, async () => {
   player.value.playVideo()
 })
 
-// watch(widthRef, () => {
-//   player.value.setSize(widthRef.value, props.height)
-// })
+watch(widthRef, () => {
+  player.value.setSize(props.width, props.height)
+})
 
 </script>
 
