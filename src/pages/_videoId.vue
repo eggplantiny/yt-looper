@@ -14,7 +14,7 @@
         @play="events.onPlay"
       />
     </div>
-    <div class="mt-6 rounded-2xl shadow-lg px-8 py-4 bg-purple-100">
+    <a-card>
       <span>
         {{ playTime.toFixed(2) }} s
       </span>
@@ -29,6 +29,7 @@
           </a-button>
           <dropdown-menu
             v-model="playbackRate.value"
+            height="44.5"
             :items="playbackRate.items"
             class="ml-2"
           >
@@ -36,8 +37,8 @@
           </dropdown-menu>
         </div>
       </div>
-    </div>
-    <div class="mt-6 rounded-2xl shadow-lg px-8 py-4 bg-purple-100">
+    </a-card>
+    <a-card>
       <slider
         v-model="sliderValue"
         class="slider-indigo"
@@ -75,7 +76,7 @@
           Save
         </a-button>
       </div>
-    </div>
+    </a-card>
     <transition-group
       name="fade"
     >
@@ -83,7 +84,7 @@
         v-for="(item, index) in sortedLoopList"
         :key="index"
       >
-        <div class="mt-6 rounded-2xl shadow-lg px-8 py-4 bg-purple-100">
+        <a-card>
           <div>
             {{ item.start }} s - {{ item.end }} s
           </div>
@@ -109,7 +110,7 @@
               Apply
             </a-button>
           </div>
-        </div>
+        </a-card>
       </template>
     </transition-group>
   </section>
@@ -131,6 +132,7 @@ import { useRoute, useRouter } from 'vue-router'
 import useBreakpoints from '@/compositions/useBreakpoints'
 import useNotify from '@/compositions/useNotify'
 import Slider from '@vueform/slider'
+import ACard from '../components/atoms/ACard.vue'
 import AButton from "@/components/atoms/AButton.vue"
 import DropdownMenu from "@/components/molecules/DropdownMenu.vue"
 import YoutubePlayer from '@/components/atoms/YoutubePlayer.vue'
@@ -154,8 +156,9 @@ function calculatePlayerSize (playerWrapper): ISize {
 export default defineComponent({
   name: 'Home',
   components: {
-    DropdownMenu,
     AButton,
+    ACard,
+    DropdownMenu,
     Slider,
     TextField,
     YoutubePlayer

@@ -87,6 +87,10 @@ export default {
     width: {
       type: Number,
       default: 100
+    },
+    height: {
+      type: Number,
+      default: 45
     }
   },
   setup (props, context: SetupContext) {
@@ -104,12 +108,15 @@ export default {
       return [...bgClasses, ...textClasses]
     })
 
+
     const computedStyle = computed(() => {
       const minWidth = useSize(props.width)
       const width = useSize(100, '%')
+      const height = `${props.height}px`
 
       return {
         minWidth,
+        height,
         width
       }
     })
