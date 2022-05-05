@@ -20,7 +20,7 @@ import {
 
 import {
   useColor
-} from "../../compositions/useStyle"
+} from "@/compositions/useStyle"
 
 export default {
   name: 'AButton',

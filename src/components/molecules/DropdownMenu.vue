@@ -50,12 +50,10 @@ import {
 
 import ADropdown from "@/components/atoms/ADropdown.vue"
 import AListItem from "@/components/atoms/AListItem.vue"
-import useModel from "@/compositions/useModel"
+
 import {
   useColor, useSize
 } from "@/compositions/useStyle"
-
-const model = useModel()
 
 export default {
   name: 'DropdownMenu',
@@ -64,10 +62,8 @@ export default {
     ADropdown
   },
   emits: {
-    ...model.emits
   },
   props: {
-    ...model.props,
     items: {
       type: Array as PropType<any[]>,
       default: () => []

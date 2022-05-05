@@ -29,7 +29,7 @@
 import TextField from '@/components/atoms/TextField.vue'
 import AButton from '@/components/atoms/AButton.vue'
 import Header from '@/components/atoms/Header.vue'
-import useSearch from '@/compositions/useSearch'
+import { useSearch } from '@/compositions/useSearch'
 
 const { search, searchValue } = useSearch()
 </script>
