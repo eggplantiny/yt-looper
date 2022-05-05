@@ -9,13 +9,13 @@
           class="w-full text-center"
           @keydown.enter="search"
         />
-        <a-button
+        <AButton
           class="ml-4"
-          height="60"
+          :height="60"
           @click="search"
         >
           Search
-        </a-button>
+        </AButton>
       </div>
     </div>
 

@@ -1,6 +1,6 @@
 <template>
   <button
-    class="font-bold py-2 px-4 rounded transition-colors"
+    class="btn"
     :class="computedClass"
     :style="computedStyle"
   >
@@ -8,65 +8,46 @@
   </button>
 </template>
 
-<script lang="ts">
-import {
-  computed,
-  PropType
-} from 'vue'
-
-import {
-  Tailwind
-} from '@/types'
+<script lang="ts" setup>
+import { computed, } from 'vue'
+import { Tailwind } from '@/types'
 
 import {
   useColor
-} from "@/compositions/useStyle"
+} from '@/compositions/useStyle'
 
-export default {
-  name: 'AButton',
-  props: {
-    color: {
-      type: String as PropType<Tailwind.Color>,
-      default: 'indigo'
-    },
-    text: {
-      type: String as PropType<Tailwind.Color>,
-      default: 'white'
-    },
-    height: {
-      type: Number,
-      default: 48
-    }
-  },
-  setup (props) {
-    const computedClass = computed(() => {
-      const bgClasses = [
-        useColor('bg', props.color, 500),
-        useColor('hover:bg', props.color, 700)
-      ]
+type TBtnColorOptions = 'primary' | 'secondary' | 'accent' | 'info' | 'success' | 'warning' | 'error'
+type TBtnStateOptions = 'link' | 'ghost' | 'outline' | 'active' | 'disabled'
 
-      const textClasses = [
-        useColor('text', props.text)
-      ]
+const props = withDefaults(defineProps<{
+  color?: TBtnColorOptions
+  text?: Tailwind.Color
+  height?: number
+}>(), {
+  color: 'primary',
+  text: 'white',
+  height: 48
+})
 
-      return [...bgClasses, ...textClasses]
-    })
+const computedClass = computed(() => {
+  const bgClasses = [
+    `btn-${props.color}`
+  ]
 
-    const computedStyle = computed(() => {
-      const height = `${props.height}px`
-      return {
-        height
-      }
-    })
+  const textClasses = [
+    useColor('text', props.text)
+  ]
 
-    return {
-      computedClass,
-      computedStyle
-    }
+  return [...bgClasses, ...textClasses]
+})
+
+const computedStyle = computed(() => {
+  const height = `${props.height}px`
+  return {
+    height
   }
-}
+})
 </script>
 
 <style scoped>
-
 </style>

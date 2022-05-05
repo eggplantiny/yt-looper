@@ -20,13 +20,13 @@
       </span>
       <div class="mt-2">
         <div class="flex justify-end">
-          <a-button
+          <AButton
             height="44.5"
             :color="tabToLoopBtnColor"
             @click="onClick.tapToLoop"
           >
             A-B Loop
-          </a-button>
+          </AButton>
           <dropdown-menu
             v-model="playbackRate.value"
             height="44.5"
@@ -55,26 +55,26 @@
         </span>
       </div>
       <div class="mt-2 flex justify-end">
-        <a-button
-          color="green"
+        <AButton
+          color="warning"
           @click="onClick.copy()"
         >
           Copy
-        </a-button>
-        <a-button
-          color="blue"
+        </AButton>
+        <AButton
+          color="error"
           class="ml-2"
           @click="onClick.clearLoop"
         >
           Clear
-        </a-button>
-        <a-button
-          color="indigo"
+        </AButton>
+        <AButton
+          color="success"
           class="ml-2"
           @click="loop.saveLoop"
         >
           Save
-        </a-button>
+        </AButton>
       </div>
     </a-card>
     <transition-group
@@ -89,26 +89,26 @@
             {{ item.start }} s - {{ item.end }} s
           </div>
           <div class="flex justify-end mt-3">
-            <a-button
-              color="green"
+            <AButton
+              color="warning"
               @click="onClick.copy(item)"
             >
               Copy
-            </a-button>
-            <a-button
-              color="red"
+            </AButton>
+            <AButton
+              color="error"
               class="ml-2"
               @click="loop.deleteLoop(item)"
             >
               Delete
-            </a-button>
-            <a-button
-              color="indigo"
+            </AButton>
+            <AButton
+              color="primary"
               class="ml-2"
               @click="onClick.applyLoop(item)"
             >
               Apply
-            </a-button>
+            </AButton>
           </div>
         </a-card>
       </template>
@@ -174,9 +174,9 @@ export default defineComponent({
     const playTime = ref(0)
     const tabToLoopBtnColor = computed(() => {
       if (tabToLoop.tabMode === 0) {
-        return 'indigo'
+        return 'primary'
       } else {
-        return 'green'
+        return 'secondary'
       }
     })
     const currentPath = computed(() => `${location.host}${route.fullPath}`)
