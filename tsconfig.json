@@ -6,10 +6,10 @@
     "importHelpers": true,
     "isolatedModules": true,
     "noEmit": true,
-    "baseUrl": "src/",
+    "baseUrl": ".",
     "paths": {
       "@/*": [
-        "*"
+        "./src/*"
       ]
     }
   },
