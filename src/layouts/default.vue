@@ -28,7 +28,7 @@
 <script lang="ts" setup>
 import TextField from '@/components/atoms/TextField.vue'
 import AButton from '@/components/atoms/AButton.vue'
-import Header from '@/components/atoms/Header.vue'
+import Header from '../components/organisms/Header.vue'
 import useSearch from '@/compositions/useSearch'
 
 const { search, searchValue } = useSearch()
