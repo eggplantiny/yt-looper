@@ -6,11 +6,7 @@
   </ul>
 </template>
 
-<script lang="ts">
-
-export default {
-  name: 'ADropdown'
-}
+<script lang="ts" setup>
 </script>
 
 <style scoped>

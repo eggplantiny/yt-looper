@@ -20,7 +20,7 @@ import Player from 'youtube-player'
 
 import { YouTubePlayer } from 'youtube-player/dist/types'
 
-import {IPlayerVars, Youtube} from "@/types"
+import { IPlayerVars, Youtube } from "@/types"
 import { delay } from '@/utils/asyncTools'
 
 const props = defineProps({
