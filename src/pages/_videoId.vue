@@ -2,7 +2,7 @@
   <section>
     <div
       ref="playerWrapper"
-      class="mt-6 rounded-2xl shadow-lg px-4 py-4 bg-purple-100"
+      class="mt-6 rounded-2xl shadow-lg px-4 py-4 bg-base-content"
     >
       <youtube-player
         ref="player"
@@ -140,6 +140,7 @@ import TextField from '@/components/atoms/TextField.vue'
 
 import { ISize, Loop } from '@/types'
 import { info } from 'autoprefixer'
+import { Color } from '../types/daisyui.type'
 
 function calculatePlayerSize (playerWrapper): ISize {
   let width = 100
@@ -172,7 +173,7 @@ export default defineComponent({
     const playerWrapper = ref(null)
     const player = ref(null)
     const playTime = ref(0)
-    const tabToLoopBtnColor = computed(() => {
+    const tabToLoopBtnColor = computed<Color>(() => {
       if (tabToLoop.tabMode === 0) {
         return 'primary'
       } else {
