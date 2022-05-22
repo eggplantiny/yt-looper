@@ -195,7 +195,7 @@ export default defineComponent({
     const loopList = ref<Loop[]>([])
     const sortedLoopList = computed(() => loopList.value.sort((a, b) => a.createdAt - b.createdAt ? -1 : 1))
     const playbackRate = reactive({
-      items: [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2],
+      items: [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2].map(x => ({ label: `${x} X`, value: x })),
       value: 1
     })
 
