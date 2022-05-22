@@ -1,20 +1,20 @@
 <template>
   <button
-    class="btn btn-primary"
+    :class="['btn', computedColor]"
   >
     <slot />
   </button>
 </template>
 
-<script lang="ts">
-import { defineProps, withDefaults } from 'vue'
-import { BtnColor } from '@/types/daisyui.type'
+<script lang="ts" setup>
+import { computed, defineProps } from 'vue'
+import { Color } from '@/types/daisyui.type'
 
-withDefaults(defineProps<{
-  color?: BtnColor
-}>(), {
-  color: 'btn-primary'
-})
+const { color } = defineProps<{
+  color?: Color
+}>()
+
+const computedColor = computed(() => color ? `btn-${color}` : '')
 </script>
 
 <style scoped>
