@@ -15,9 +15,9 @@
       />
     </div>
     <a-card>
-      <span>
+      <p class="text-xl font-bold text-center">
         {{ playTime.toFixed(2) }} s
-      </span>
+      </p>
       <div class="mt-2">
         <div class="flex justify-end">
           <AButton
@@ -27,6 +27,8 @@
           >
             A-B Loop
           </AButton>
+          <input type="number" placeholder="1.0x" class="input text-white" />
+
           <dropdown-menu
             v-model="playbackRate.value"
             height="44.5"
@@ -51,7 +53,7 @@
 
       <div class="mt-2">
         <span>
-          {{ slider.range[0] }} sec - {{ slider.range[1] }} sec
+          {{ slider.range[0].toFixed(2) }} sec - {{ slider.range[1].toFixed(2) }} sec
         </span>
       </div>
       <div class="mt-2 flex justify-end">
@@ -86,7 +88,7 @@
       >
         <a-card>
           <div>
-            {{ item.start }} s - {{ item.end }} s
+            {{ item.start.toFixed(2) }} s - {{ item.end.toFixed(2) }} s
           </div>
           <div class="flex justify-end mt-3">
             <AButton
