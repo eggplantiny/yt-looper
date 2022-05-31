@@ -1,6 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import "./fonts";
+
+* {
+  font-family: "BMJUA", system-ui, sans-serif;
+}
 
 .fade-enter-active, .fade-leave-active {
   transition: opacity .5s;

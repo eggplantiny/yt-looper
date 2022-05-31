@@ -132,15 +132,14 @@ import { useRoute, useRouter } from 'vue-router'
 import useBreakpoints from '@/compositions/useBreakpoints'
 import useNotify from '@/compositions/useNotify'
 import Slider from '@vueform/slider'
-import ACard from '../components/atoms/ACard.vue'
+import ACard from '@/components/atoms/ACard.vue'
 import AButton from "@/components/atoms/AButton.vue"
 import DropdownMenu from "@/components/molecules/DropdownMenu.vue"
 import YoutubePlayer from '@/components/atoms/YoutubePlayer.vue'
 import TextField from '@/components/atoms/TextField.vue'
 
 import { ISize, Loop } from '@/types'
-import { info } from 'autoprefixer'
-import { Color } from '../types/daisyui.type'
+import { Color } from '@/types/daisyui.type'
 
 function calculatePlayerSize (playerWrapper): ISize {
   let width = 100
