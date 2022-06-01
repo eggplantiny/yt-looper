@@ -1,77 +1,72 @@
-<template>
-  <div
-    id="youtube-vue-player"
-    class="mx-auto"
-  />
-</template>
-
 <script setup lang="ts">
-import {
-  ref,
-  watch,
-  nextTick,
-  onMounted,
-  onBeforeUnmount,
+import type {
   PropType,
-  Ref, toRefs
+  Ref,
+} from 'vue'
+import {
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  toRefs, watch,
 } from 'vue'
 
 import Player from 'youtube-player'
 
-import { YouTubePlayer } from 'youtube-player/dist/types'
+import type { YouTubePlayer } from 'youtube-player/dist/types'
 
-import { IPlayerVars, Youtube } from "@/types"
+import type { IPlayerVars, Youtube } from '@/types'
 import { delay } from '@/utils/asyncTools'
 
 const props = defineProps({
   autoplay: {
     type: Number as PropType<0 | 1>,
     default: 0,
-    validator (value: unknown): boolean {
+    validator(value: unknown): boolean {
       return Number(value) === 0 || Number(value) === 1
-    }
+    },
   },
   loop: {
     type: Number as PropType<0 | 1>,
     default: 0,
-    validator (value: unknown): boolean {
+    validator(value: unknown): boolean {
       return Number(value) === 0 || Number(value) === 1
-    }
+    },
   },
   elementId: {
     type: String,
-    default: 'youtube-vue-player'
+    default: 'youtube-vue-player',
   },
   width: {
     type: Number,
-    default: 480
+    default: 480,
   },
   height: {
     type: Number,
-    default: 320
+    default: 320,
   },
   videoId: {
     type: String,
-    required: true
+    required: true,
   },
   timing: {
     type: Number,
-    default: 66
+    default: 66,
   },
   playerVars: {
     type: Object as PropType<IPlayerVars>,
     default: () => ({
-      autoplay: 1
-    })
+      autoplay: 1,
+    }),
   },
   repeat: {
     type: Boolean,
-    default: true
-  }
+    default: true,
+  },
 })
 
-const emit = defineEmits(['ended', 'paused', 'play', 'buffering', 'time'])
-let player: Ref<YouTubePlayer> = ref()
+const emit = defineEmits(['ended', 'paused', 'play', 'buffering', 'time', 'unstarted'])
+const player: Ref<YouTubePlayer> = ref()
 
 const propRef = toRefs(props)
 
@@ -84,7 +79,6 @@ const lastTime = propRef.timing
 const widthRef = propRef.width
 
 const tick = async () => {
-
   if (cancelStatus.value === true) {
     cancelStatus.value = false
     if (callbackId.value !== 0) {
@@ -96,9 +90,8 @@ const tick = async () => {
 
   playTime.value = await player.value.getCurrentTime()
   const timingDiff = lastTime.value - playTime.value
-  if (timingDiff < props.timing) {
+  if (timingDiff < props.timing)
     await delay(timingDiff)
-  }
 
   callbackId.value = requestAnimationFrame(tick)
   emit('time', playTime.value)
@@ -107,9 +100,8 @@ const tick = async () => {
 const startPlayer = () => {
   cancelStatus.value = false
 
-  if (initialized.value === false) {
+  if (initialized.value === false)
     initialized.value = true
-  }
 
   tick()
 }
@@ -156,15 +148,14 @@ const setSize = (width, height) => {
 onMounted(async () => {
   await nextTick()
 
-  if (player.value) {
+  if (player.value)
     return
-  }
 
   player.value = Player(props.elementId, {
     width: props.width,
     height: props.height,
     videoId: props.videoId,
-    playerVars: props.playerVars
+    playerVars: props.playerVars,
   })
 
   player.value.on('stateChange', async (e) => {
@@ -172,21 +163,27 @@ onMounted(async () => {
       pausePlayer()
       if (props.repeat === false) {
         emit('ended', playTime.value)
-      } else {
+      }
+      else {
         await nextTick()
         seekTo(0)
         playVideo()
       }
-    } else if (e.data === YT.PlayerState.PAUSED) {
+    }
+    else if (e.data === YT.PlayerState.PAUSED) {
       pausePlayer()
       emit('paused', playTime.value)
-    } else if (e.data === YT.PlayerState.PLAYING) {
+    }
+    else if (e.data === YT.PlayerState.PLAYING) {
       emit('play', playTime.value)
       startPlayer()
-    } else if (e.data === YT.PlayerState.BUFFERING) {
+    }
+    else if (e.data === YT.PlayerState.BUFFERING) {
       pausePlayer()
       emit('buffering')
-    } else if (e.data === YT.PlayerState.UNSTARTED) {
+    }
+    else if (e.data === YT.PlayerState.UNSTARTED) {
+      emit('unstarted')
     }
   })
 })
@@ -205,7 +202,7 @@ defineExpose({
   setPlaybackRate,
   pauseVideo,
   playVideo,
-  setSize
+  setSize,
 })
 
 watch(videoId, async () => {
@@ -217,8 +214,14 @@ watch(videoId, async () => {
 watch(widthRef, () => {
   player.value.setSize(props.width, props.height)
 })
-
 </script>
+
+<template>
+  <div
+    id="youtube-vue-player"
+    class="mx-auto"
+  />
+</template>
 
 <style scoped lang="scss">
 </style>

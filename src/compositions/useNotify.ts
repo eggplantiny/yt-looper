@@ -1,33 +1,33 @@
 import { createToast } from 'mosha-vue-toastify'
 
-export default function useNotify () {
+export default function useNotify() {
   const transition = 'zoom'
-  
+
   return {
-    success (message: string) {
+    success(message: string) {
       createToast(message, {
         transition,
         type: 'success',
-        toastBackgroundColor: '#6366F1'
+        toastBackgroundColor: '#6366F1',
       })
     },
-    warning (message: string) {
+    warning(message: string) {
       createToast(message, {
         transition,
-        type: 'warning'
+        type: 'warning',
       })
     },
-    danger (message: string) {
+    danger(message: string) {
       createToast(message, {
         transition,
-        type: 'danger'
+        type: 'danger',
       })
     },
-    info (message: string) {
+    info(message: string) {
       createToast(message, {
         transition,
-        type: 'info'
+        type: 'info',
       })
-    }
+    },
   }
 }

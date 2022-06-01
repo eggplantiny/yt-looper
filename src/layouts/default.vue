@@ -1,3 +1,12 @@
+<script lang="ts" setup>
+import Header from '../components/organisms/Header.vue'
+import TextField from '@/components/atoms/TextField.vue'
+import AButton from '@/components/atoms/AButton.vue'
+import { useSearch } from '@/compositions/useSearch'
+
+const { search, searchValue } = useSearch()
+</script>
+
 <template>
   <Header />
   <div class="container max-w-3xl px-2 sm:px-6 md:px-10 lg:px-16 mt-8 mx-auto">
@@ -11,7 +20,7 @@
               placeholder="Youtube Video URL or ID"
               class="input input-bordered w-full"
               @keydown.enter="search"
-            />
+            >
             <button
               class="btn btn-square"
               @click="search"
@@ -28,15 +37,6 @@
     </div>
   </div>
 </template>
-
-<script lang="ts" setup>
-import TextField from '@/components/atoms/TextField.vue'
-import AButton from '@/components/atoms/AButton.vue'
-import Header from '../components/organisms/Header.vue'
-import { useSearch } from '@/compositions/useSearch'
-
-const { search, searchValue } = useSearch()
-</script>
 
 <style scoped>
 

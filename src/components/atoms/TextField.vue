@@ -1,3 +1,48 @@
+<script lang="ts">
+import type { SetupContext } from 'vue'
+import {
+  computed,
+  defineComponent,
+} from 'vue'
+
+export default defineComponent({
+  name: 'TextField',
+  props: {
+    modelValue: {
+      type: String,
+      default: '',
+    },
+    label: {
+      type: String,
+      default: '',
+    },
+    placeholder: {
+      type: String,
+      default: '',
+    },
+    type: {
+      type: String,
+      default: 'text',
+    },
+  },
+  emits: ['update:modelValue'],
+  setup(props, context: SetupContext) {
+    const model = computed({
+      get() {
+        return props.modelValue
+      },
+      set(value) {
+        context.emit('update:modelValue', value)
+      },
+    })
+
+    return {
+      model,
+    }
+  },
+})
+</script>
+
 <template>
   <div>
     <label
@@ -7,59 +52,14 @@
       {{ label }}
     </label>
     <input
-      v-model="model"
       id="input"
+      v-model="model"
       class="shadow appearance-none border rounded w-full py-4 px-6 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
       :type="type"
       :placeholder="placeholder"
     >
   </div>
 </template>
-
-<script lang="ts">
-import {
-  computed,
-  defineComponent, SetupContext
-} from 'vue'
-
-export default defineComponent({
-  name: 'TextField',
-  emits: ['update:modelValue'],
-  props: {
-    modelValue: {
-      type: String,
-      default: ''
-    },
-    label: {
-      type: String,
-      default: ''
-    },
-    placeholder: {
-      type: String,
-      default: ''
-    },
-    type: {
-      type: String,
-      default: 'text'
-    }
-  },
-  setup (props, context: SetupContext) {
-
-    const model = computed({
-      get () {
-        return props.modelValue
-      },
-      set (value) {
-        context.emit('update:modelValue', value)
-      }
-    })
-
-    return {
-      model
-    }
-  }
-})
-</script>
 
 <style scoped>
 

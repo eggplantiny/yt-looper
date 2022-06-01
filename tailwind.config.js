@@ -12,6 +12,6 @@ module.exports = {
   },
   plugins: [
     require('@vueform/slider/tailwind'),
-    require('daisyui')
-  ]
+    require('daisyui'),
+  ],
 }

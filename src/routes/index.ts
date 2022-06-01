@@ -1,4 +1,5 @@
-import { createWebHistory, createRouter, RouteRecordRaw } from 'vue-router'
+import type { RouteRecordRaw } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
 import defaultLayout from '@/layouts/default.vue'
 import dynamicVideoId from '@/pages/_videoId.vue'
 import Home from '@/pages/Home.vue'
@@ -11,9 +12,9 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
-        component: dynamicVideoId
-      }
-    ]
+        component: dynamicVideoId,
+      },
+    ],
   },
   {
     path: '/',
@@ -22,13 +23,13 @@ const routes: RouteRecordRaw[] = [
     children: [
       {
         path: '',
-        component: Home
-      }
-    ]
-  }
+        component: Home,
+      },
+    ],
+  },
 ]
 
 export const router = createRouter({
   history: createWebHistory(),
-  routes
+  routes,
 })

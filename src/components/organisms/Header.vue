@@ -1,3 +1,6 @@
+<script lang="ts">
+</script>
+
 <template>
   <div class="navbar bg-base-100">
     <a class="btn btn-ghost normal-case text-xl">
@@ -5,9 +8,6 @@
     </a>
   </div>
 </template>
-
-<script lang="ts">
-</script>
 
 <style scoped>
 

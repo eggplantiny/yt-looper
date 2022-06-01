@@ -1,14 +1,6 @@
-<template>
-  <button
-    :class="['btn', computedColor]"
-  >
-    <slot />
-  </button>
-</template>
-
 <script lang="ts" setup>
 import { computed, defineProps } from 'vue'
-import { Color } from '@/types/daisyui.type'
+import type { Color } from '@/types/daisyui.type'
 
 const { color } = defineProps<{
   color?: Color
@@ -16,6 +8,14 @@ const { color } = defineProps<{
 
 const computedColor = computed(() => color ? `btn-${color}` : '')
 </script>
+
+<template>
+  <button
+    class="btn" :class="[computedColor]"
+  >
+    <slot />
+  </button>
+</template>
 
 <style scoped>
 

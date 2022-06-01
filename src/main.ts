@@ -1,8 +1,8 @@
 import { createApp } from 'vue'
-import App from './App.vue'
 import { router } from '@/routes'
+import App from '@/App.vue'
 
-import './assets/main.scss'
+import '@/assets/main.scss'
 import '@vueform/slider/themes/default.css'
 import 'mosha-vue-toastify/dist/style.css'
 

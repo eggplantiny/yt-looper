@@ -1,18 +1,17 @@
-import {
+import type {
   Style,
-  Tailwind
+  Tailwind,
 } from '@/types'
 
-export function useColor (prefix: string, color: Tailwind.Color, colorLevel?: Tailwind.ColorLevel) {
+export function useColor(prefix: string, color: Tailwind.Color, colorLevel?: Tailwind.ColorLevel) {
   let result = `${prefix}-${color}`
 
-  if (colorLevel) {
+  if (colorLevel)
     result = `${result}-${colorLevel}`
-  }
 
   return result
 }
 
-export function useSize (value: number, unit: Style.Size = 'px') {
+export function useSize(value: number, unit: Style.Size = 'px') {
   return `${value}${unit}`
 }

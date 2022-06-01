@@ -1,3 +1,21 @@
+<script lang="ts" setup>
+import { defineProps } from 'vue'
+interface Item {
+  value: string | number
+  label: string
+}
+const { items } = withDefaults(defineProps<{
+  items: Item[]
+  modelValue: unknown
+}>(), {
+  items: () => [],
+})
+const emits = defineEmits(['update:modelValue'])
+function onClickItem(item: Item) {
+  emits('update:modelValue', item.value)
+}
+</script>
+
 <template>
   <div class="dropdown dropdown-hover dropdown-left">
     <label tabindex="0" class="btn">
@@ -12,25 +30,6 @@
     </ul>
   </div>
 </template>
-
-<script lang="ts" setup>
-import { defineProps } from 'vue'
-interface Item {
-  value: string | number
-  label: string
-}
-const emits = defineEmits(['update:modelValue'])
-const { items } = withDefaults(defineProps<{
-  items: Item[]
-  modelValue: unknown
-}>(), {
-  items: () => []
-})
-
-function onClickItem (item: Item) {
-  emits('update:modelValue', item.value)
-}
-</script>
 
 <style scoped>
 </style>
