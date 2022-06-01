@@ -4,7 +4,7 @@
 @import "./fonts";
 
 * {
-  font-family: "BMJUA", system-ui, sans-serif;
+  font-family: "LAB디지털", system-ui, sans-serif;
 }
 
 .fade-enter-active, .fade-leave-active {
@@ -14,3 +14,6 @@
   opacity: 0;
 }
 
+.btn {
+  @apply tracking-wider font-bold;
+}

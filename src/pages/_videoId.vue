@@ -247,7 +247,7 @@ function calculatePlayerSize(playerWrapper): ISize {
     </div>
     <a-card>
       <p class="text-xl font-bold">
-        {{ playTime.toFixed(2) }} s
+        {{ playTime.toFixed(2) }} SEC
       </p>
       <div class="mt-2">
         <div class="flex justify-end">
@@ -267,14 +267,6 @@ function calculatePlayerSize(playerWrapper): ISize {
             class="mx-2"
           />
 
-          <!--          <dropdown-menu -->
-          <!--            v-model="playbackRate.value" -->
-          <!--            height="44.5" -->
-          <!--            :items="playbackRate.items" -->
-          <!--            class="ml-2" -->
-          <!--          > -->
-          <!--            {{ playbackRate.value.toFixed(2) }} x -->
-          <!--          </dropdown-menu> -->
         </div>
       </div>
     </a-card>
@@ -358,12 +350,20 @@ function calculatePlayerSize(playerWrapper): ISize {
 
 <style scoped lang="scss">
 .slider-indigo {
-  --slider-connect-bg: #6366F1;
-  --slider-tooltip-bg: #6366F1;
-  --slider-handle-ring-color: #3730A3;
+  --slider-connect-bg: #20134E;
+  --slider-tooltip-bg: #20134E;
+  --slider-handle-ring-color: #20134E;
 }
 
 ::v-deep(.el-input) {
   height: 48px;
+}
+
+::v-deep(.el-input-number__decrease) {
+  @apply text-white bg-[#20134E];
+}
+
+::v-deep(.el-input-number__increase) {
+  @apply text-white bg-[#20134E];
 }
 </style>
