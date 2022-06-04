@@ -14,6 +14,7 @@ declare module '@vue/runtime-core' {
     ElInputNumbe: typeof import('element-plus/es')['ElInputNumbe']
     ElInputNumber: typeof import('element-plus/es')['ElInputNumber']
     Header: typeof import('./src/components/organisms/Header.vue')['default']
+    LabelButton: typeof import('./src/components/molecules/LabelButton.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     SearchWrapper: typeof import('./src/components/molecules/SearchWrapper.vue')['default']

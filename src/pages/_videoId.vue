@@ -16,9 +16,9 @@ import { useRoute, useRouter } from 'vue-router'
 import VSlider from '@vueform/slider'
 import useBreakpoints from '@/compositions/useBreakpoints'
 import useNotify from '@/compositions/useNotify'
+
 import ACard from '@/components/atoms/ACard.vue'
 import AButton from '@/components/atoms/AButton.vue'
-import DropdownMenu from '@/components/molecules/DropdownMenu.vue'
 import YoutubePlayer from '@/components/atoms/YoutubePlayer.vue'
 
 import type { ISize, Loop } from '@/types'
@@ -36,7 +36,6 @@ const playerSize = ref<ISize>({
   width: 320,
   height: 180,
 })
-const num = ref(1)
 
 const videoId = computed<string>(() => `${route.params.videoId || ''}`)
 
@@ -252,21 +251,19 @@ function calculatePlayerSize(playerWrapper): ISize {
       <div class="mt-2">
         <div class="flex justify-end">
           <AButton
-            height="44.5"
             :color="tabToLoopBtnColor"
             @click="onClick.tapToLoop"
           >
             A-B Loop
           </AButton>
 
-          <el-input-number
+          <ElInputNumber
             v-model="playbackRate.value"
             :min="0.10"
             :max="2.00"
             :step="0.01"
             class="mx-2"
           />
-
         </div>
       </div>
     </a-card>

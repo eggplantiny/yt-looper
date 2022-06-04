@@ -1,3 +1,9 @@
+<script lang="ts" setup>
+import { useSearch } from '@/compositions/useSearch'
+
+const { search, searchValue } = useSearch()
+</script>
+
 <template>
   <div class="rounded-2xl shadow-lg px-4 py-4 bg-base-content">
     <div class="flex items-center">
@@ -21,14 +27,6 @@
     </div>
   </div>
 </template>
-
-<script lang="ts" setup>
-import TextField from '@/components/atoms/TextField.vue'
-import AButton from '@/components/atoms/AButton.vue'
-import { useSearch } from '@/compositions/useSearch'
-
-const { search, searchValue } = useSearch()
-</script>
 
 <style scoped>
 
