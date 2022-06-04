@@ -16,6 +16,7 @@ declare module '@vue/runtime-core' {
     Header: typeof import('./src/components/organisms/Header.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    SearchWrapper: typeof import('./src/components/molecules/SearchWrapper.vue')['default']
     TextField: typeof import('./src/components/atoms/TextField.vue')['default']
     YoutubePlayer: typeof import('./src/components/atoms/YoutubePlayer.vue')['default']
   }
