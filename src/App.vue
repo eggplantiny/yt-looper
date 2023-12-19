@@ -2,9 +2,9 @@
 </script>
 
 <template>
-  <main>
+  <div>
     <router-view />
-  </main>
+  </div>
 </template>
 
 <style lang="scss">

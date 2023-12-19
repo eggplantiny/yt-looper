@@ -54,7 +54,7 @@ export default defineComponent({
     <input
       id="input"
       v-model="model"
-      class="shadow appearance-none border rounded w-full py-4 px-6 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+      class="shadow text-white bg-indigo-400 appearance-none border rounded-box w-full py-4 px-6 leading-tight focus:outline-none focus:shadow-outline"
       :type="type"
       :placeholder="placeholder"
     >

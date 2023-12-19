@@ -11,7 +11,7 @@ const computedColor = computed(() => color ? `btn-${color}` : '')
 
 <template>
   <button
-    class="btn" :class="[computedColor]"
+    class="btn rounded-box" :class="[computedColor]" type="button"
   >
     <slot />
   </button>

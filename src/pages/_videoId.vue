@@ -23,6 +23,7 @@ import YoutubePlayer from '@/components/atoms/YoutubePlayer.vue'
 
 import type { ISize, Loop } from '@/types'
 import type { Color } from '@/types/daisyui.type'
+import TextField from '@/components/atoms/TextField.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -52,6 +53,13 @@ const tabToLoopBtnColor = computed<Color>(() => {
     return 'secondary'
 })
 
+const abLoopBtnLabel = computed<string>(() => {
+  if (tabToLoop.tabMode === 0)
+    return 'A-B Loop'
+  else
+    return 'Set B'
+})
+
 const currentPath = computed<string>(() => `${location.host}${route.fullPath}`)
 
 const loopList = ref<Loop[]>([])
@@ -76,6 +84,29 @@ const sliderValue = toRef(slider, 'range')
 const playbackRateRef = toRef(playbackRate, 'value')
 const queryRef = toRef(route, 'query')
 const ready = ref(false)
+
+const numberInput = reactive({
+  start: 0,
+  end: 0,
+})
+
+function applyTimeRange() {
+  const start = Number(numberInput.start)
+  const end = Number(numberInput.end)
+
+  if (isNaN(start) || isNaN(end)) {
+    danger('❌ Invalid time range')
+    return
+  }
+
+  if (start > end || Math.abs(start - end) < 0.1) {
+    danger('❌ Invalid time range')
+    return
+  }
+
+  router.push({ path: route.path, query: { s: start, e: end } })
+  success('✔Success apply time range')
+}
 
 const loop = {
   saveLoop() {
@@ -234,7 +265,7 @@ function calculatePlayerSize(playerWrapper): ISize {
       ref="playerWrapper"
       class="mt-6 rounded-2xl shadow-lg px-4 py-4 bg-base-content"
     >
-      <youtube-player
+      <YoutubePlayer
         ref="player"
         :video-id="videoId"
         :autoplay="0"
@@ -244,30 +275,54 @@ function calculatePlayerSize(playerWrapper): ISize {
         @play="events.onPlay"
       />
     </div>
-    <a-card>
+    <ACard>
       <p class="text-xl font-bold">
         {{ playTime.toFixed(2) }} SEC
       </p>
       <div class="mt-2">
-        <div class="flex justify-end">
-          <AButton
-            :color="tabToLoopBtnColor"
-            @click="onClick.tapToLoop"
-          >
-            A-B Loop
-          </AButton>
+        <div class="flex flex-col gap-2 items-end">
+          <div class="col-span-4 flex items-end gap-2">
+            <TextField
+              v-model="numberInput.start"
+              type="number"
+              label="Start"
+              class="w-24"
+            />
 
-          <ElInputNumber
-            v-model="playbackRate.value"
-            :min="0.10"
-            :max="2.00"
-            :step="0.01"
-            class="mx-2"
-          />
+            <TextField
+              v-model="numberInput.end"
+              type="number"
+              label="End"
+              class="w-24"
+            />
+
+            <AButton
+              color="primary"
+              @click="applyTimeRange"
+            >
+              Apply Time Range
+            </AButton>
+          </div>
+          <div class="flex justify-end gap-2">
+            <AButton
+              :color="tabToLoopBtnColor"
+              @click="onClick.tapToLoop"
+            >
+              {{ abLoopBtnLabel }}
+            </AButton>
+
+            <ElInputNumber
+              v-model="playbackRate.value"
+              :min="0.10"
+              :max="2.00"
+              :step="0.01"
+              label="Playback Rate"
+            />
+          </div>
         </div>
       </div>
-    </a-card>
-    <a-card>
+    </ACard>
+    <ACard>
       <VSlider
         v-model="sliderValue"
         class="slider-indigo"
@@ -305,7 +360,7 @@ function calculatePlayerSize(playerWrapper): ISize {
           Save
         </AButton>
       </div>
-    </a-card>
+    </ACard>
     <transition-group
       name="fade"
     >
@@ -313,7 +368,7 @@ function calculatePlayerSize(playerWrapper): ISize {
         v-for="(item, index) in loopList"
         :key="index"
       >
-        <a-card>
+        <ACard>
           <div>
             {{ item.start.toFixed(2) }} s - {{ item.end.toFixed(2) }} s
           </div>
@@ -339,7 +394,7 @@ function calculatePlayerSize(playerWrapper): ISize {
               Apply
             </AButton>
           </div>
-        </a-card>
+        </ACard>
       </template>
     </transition-group>
   </section>

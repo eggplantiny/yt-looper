@@ -3,7 +3,7 @@
 
 <template>
   <ul
-    class="dropdown-menu absolute hidden text-grey-700 pt-1 rounded-lg w-full"
+    class="dropdown-menu absolute hidden text-grey-700 pt-1 rounded-box w-full"
   >
     <slot />
   </ul>
