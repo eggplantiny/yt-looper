@@ -144,7 +144,18 @@ const loop = {
 const onClick = {
   async applyLoop(loop: Loop) {
     player.value.pauseVideo()
-    await router.push(loop.url)
+
+    function removeHost(url: string) {
+      const urlObj = new URL(url)
+      return `${urlObj.search}`
+    }
+    await router.push({
+      path: removeHost(loop.url),
+      query: {
+        s: loop.start,
+        e: loop.end,
+      },
+    })
     await nextTick()
     player.value.playVideo()
     success(`✔️ Applied loop ${loop.start}s - ${loop.end}s`)
